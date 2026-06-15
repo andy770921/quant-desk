@@ -18,10 +18,15 @@ async function bootstrap() {
 
     // Swagger configuration (identical to main.ts)
     const config = new DocumentBuilder()
-      .setTitle('NestJS Backend API')
-      .setDescription('API documentation for fullstack boilerplate')
+      .setTitle('Quant Strategies API')
+      .setDescription('美股量化交易策略平台 — 市場資料、策略與回測 API')
       .setVersion('1.0')
       .addTag('api', 'Core API endpoints')
+      .addTag('market', 'US market data')
+      .addTag('strategies', 'Quant strategies')
+      .addTag('backtest', 'Strategy backtesting')
+      .addTag('signals', 'Live buy/sell signals')
+      .addTag('notifications', '[future] trade alerts')
       .build();
 
     const document = SwaggerModule.createDocument(app, config);

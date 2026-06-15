@@ -1,6 +1,6 @@
 # Documents Directory
 
-This directory contains documentation for the whale browser extension organized by JIRA tickets for better traceability and organization.
+This directory contains documentation for the QuantDesk platform, organized by ticket for better traceability and organization. The current work lives under `FEAT-1/`.
 
 ## Folder Structure
 
@@ -16,7 +16,7 @@ documents/
 
 ### Ticket-Based Organization
 
-Each JIRA ticket (e.g., `STARFISH-7489`, `STARFISH-7316`) gets its own folder containing:
+Each ticket (e.g., `FEAT-1`) gets its own folder containing:
 
 #### `/[TICKET-NUMBER]/plans/`
 

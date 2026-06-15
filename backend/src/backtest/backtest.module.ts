@@ -1,0 +1,12 @@
+import { Module } from '@nestjs/common';
+import { MarketDataModule } from '../market-data/market-data.module';
+import { StrategiesModule } from '../strategies/strategies.module';
+import { BacktestController } from './backtest.controller';
+import { BacktestService } from './backtest.service';
+
+@Module({
+  imports: [MarketDataModule, StrategiesModule],
+  controllers: [BacktestController],
+  providers: [BacktestService],
+})
+export class BacktestModule {}

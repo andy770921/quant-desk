@@ -1,0 +1,32 @@
+[
+  {
+    "symbol": "AAPL",
+    "firstDate": "1980-12-12",
+    "lastDate": "2026-06-12",
+    "count": 11467
+  },
+  {
+    "symbol": "MSFT",
+    "firstDate": "1986-03-13",
+    "lastDate": "2026-06-12",
+    "count": 10141
+  },
+  {
+    "symbol": "NVDA",
+    "firstDate": "1999-01-22",
+    "lastDate": "2026-06-12",
+    "count": 6890
+  },
+  {
+    "symbol": "AMZN",
+    "firstDate": "1997-05-15",
+    "lastDate": "2026-06-12",
+    "count": 7315
+  },
+  {
+    "symbol": "GOOGL",
+    "firstDate": "2004-08-19",
+    "lastDate": "2026-06-12",
+    "count": 5489
+  }
+]

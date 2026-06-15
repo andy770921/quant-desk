@@ -1,0 +1,10 @@
+# Dependencies & build output
+node_modules/
+dist/
+build/
+.next/
+coverage/
+*.tsbuildinfo
+
+# Generated market data (fetched JSON snapshots — not hand-edited)
+backend/data/

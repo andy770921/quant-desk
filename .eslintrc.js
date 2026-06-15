@@ -14,7 +14,7 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
-  ignorePatterns: ['node_modules/', 'dist/', 'build/', 'coverage/', '.next/'],
+  ignorePatterns: ['node_modules/', 'dist/', 'build/', 'coverage/', '.next/', 'next-env.d.ts'],
   overrides: [
     // TypeScript files
     {
@@ -39,6 +39,9 @@ module.exports = {
       files: ['backend/**/*.ts'],
       parser: '@typescript-eslint/parser',
       parserOptions: {
+        // Resolve relative to this config's directory so lint works whether it
+        // runs from the repo root or from inside backend/ (turbo runs per-workspace).
+        tsconfigRootDir: __dirname,
         project: './backend/tsconfig.json',
         sourceType: 'module',
       },
