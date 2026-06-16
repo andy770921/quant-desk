@@ -3,7 +3,7 @@
 ## What was built
 
 A full quant backtesting platform on top of the existing monorepo. New code only; the original
-health endpoint/page wiring was reused as the integration pattern. 19 strategies, share-based
+health endpoint/page wiring was reused as the integration pattern. 10 strategies, share-based
 no-borrow engine, dynamic grading, live signals, and a refreshable OHLCV data layer.
 
 ### Backend (`backend/src`)
@@ -12,8 +12,13 @@ no-borrow engine, dynamic grading, live signals, and a refreshable OHLCV data la
   from `^GSPC`, composes logical assets (`assets.ts`, incl. synthetic leveraged ETFs), and supports
   **live refresh** (`refreshFromLive`, `yahoo.client.ts`). Endpoints: `/api/market/overview`, `/series/:symbol`.
 - `strategies/` — `indicators.ts` (SMA, return, RSI, vol, 13612W, accel); `definitions/` with **one
-  file per strategy** (`01-*.ts`…`10-*.ts` + `improved/*-plus.ts`) aggregated by `index.ts`;
+  file per strategy** (`01-*.ts`…`10-*.ts`, shared math in `_helpers.ts`) aggregated by `index.ts`;
   `strategies.service.ts` (registry; **derives** `riskLevel` + `leverage` from a canonical backtest).
+  10 strategies ship: `01` is the flagship (3x Nasdaq gated by the **QQQ / Nasdaq-100** 20-day MA —
+  the signal is the *unleveraged* index, not TQQQ); `02`–`10` are research-driven rules-based
+  approaches (composite 13612W momentum, vol targeting, inverse-vol risk parity, etc.). Each
+  definition carries a `signalFormula` string that is **the math rendered on the UI** and must stay
+  in lockstep with its `decide()` — treat them as one unit when editing.
 - `backtest/` — `engine.ts` (pure, share-based, no-borrow simulation + trade ledger); `metrics.ts`
   (XIRR via bisection, CAGR, max drawdown, Sharpe, annualized vol); `backtest.service.ts` orchestrates
   strategy + QQQ/VOO benchmarks. `GET /api/backtest`.
@@ -57,9 +62,38 @@ no-borrow engine, dynamic grading, live signals, and a refreshable OHLCV data la
 - `npm run build`, `npm run lint`, `npm run test` all pass (also fixed a pre-existing backend ESLint
   `tsconfigRootDir` path bug + ignored generated `next-env.d.ts`).
 - Engine sanity-checked against reality: DCA into S&P 500 from 1990 → ~11% annualized; Nasdaq → ~14%.
-- All 19 strategies run with plausible, differentiated risk/return; drawdown ordering is sensible;
-  improved variants generally beat their base on Sharpe / drawdown.
+- All 10 strategies run with plausible, differentiated risk/return; drawdown ordering is sensible.
 - UI verified in a browser (home, strategy detail with charts + live signal + ledger, market, guide).
+
+## Changelog — strategy consolidation & fixes
+
+Post-initial-build refinements (the registry previously shipped 19 strategies: 10 base + 9
+`*-plus` "improved" variants):
+
+- **Collapsed 19 → 10 strategies.** The 9 research-improved variants were promoted to *be*
+  strategies `02`–`10`: each base file now carries the improved `decide()` logic under the **base
+  identity** (clean `id` without `-plus`, name without「改良版／+」, and prose rewritten so it no
+  longer reads as a variant of an "original"). The `definitions/improved/` folder was deleted and
+  `index.ts` now registers exactly the 10 files. `coreAssets`/`warmupDays` were carried over from the
+  promoted logic, so data-inception dates are unchanged. Strategy `01` (the mandated flagship) was
+  left logically untouched.
+- **Flagship signal clarified (`01`).** `decide()` already evaluated the 20-day MA on `ASSET.NASDAQ`
+  (the unleveraged Nasdaq-100 index that QQQ tracks) and only *traded* TQQQ — it was never signalling
+  off TQQQ's own MA. No logic change was needed; the `signalFormula`, rules, and description were
+  reworded to state this explicitly ("NASDAQ = QQQ／Nasdaq-100, not TQQQ"). The `NASDAQ` asset key is
+  retained in the formula so it stays consistent with the code and the other definitions.
+- **`signalFormula` ↔ `decide()` audit.** All 10 formulas were checked against their code. One real
+  drift was fixed in `04-leverage-long-run`: the formula claimed a pure UPRO blend, but the code calls
+  `equityExposureWeights(…, USLC2X, USLC3X)`, i.e. **SSO (2x) up to 2x exposure, UPRO (3x) above**.
+  The formula was corrected to match, and `USLC2X` (which the code allocates to) was added to the
+  strategy's declared `assets`/`universe`.
+- **Mobile nav fix.** The top-right `.nav-tag` pill ("美股 · 回測 · 教育用途") was wrapping into a
+  vertical strip and overflowing the bar on narrow screens. Added `white-space: nowrap` + `flex-shrink: 0`
+  and hide it under the existing 620px breakpoint (`frontend/src/app/globals.css`).
+- **Verification.** `npm run build` and the backend test suite pass; a runtime smoke test confirms the
+  registry resolves to 10 strategies with sensible derived risk/leverage and that backtests + live
+  signals run. (The frontend `provider.utils.spec.ts` failure is a pre-existing Jest-runtime version
+  issue, unrelated to these changes.)
 
 ## Follow-ups
 

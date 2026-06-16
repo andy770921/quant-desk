@@ -114,6 +114,8 @@ h4 {
   border: 1px solid var(--border);
   padding: 4px 10px;
   border-radius: 999px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 footer.site {
@@ -226,6 +228,12 @@ footer.site {
   .cols-3,
   .cols-4 {
     grid-template-columns: 1fr;
+  }
+  .nav-inner {
+    gap: 18px;
+  }
+  .nav-tag {
+    display: none;
   }
 }
 

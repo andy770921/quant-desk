@@ -84,14 +84,15 @@ endpoints map directly to query keys. Example: strategy detail page → `useBack
   canonical US trading calendar (from `^GSPC`), and composes **logical assets** (`ASSET.*` in
   `market-data/assets.ts`) — splicing ETF/index histories and synthesizing bond/cash returns from
   Treasury yields so strategies can backtest to 1990. Leverage is modeled via portfolio weights >1.
-- **Strategies**: `strategies/definitions/` — one editable file per strategy (`01-*.ts`…`10-*.ts`,
-  improved variants under `improved/`), aggregated by `definitions/index.ts`. Each is a pure
+- **Strategies**: `strategies/definitions/` — one editable file per strategy (`01-*.ts`…`10-*.ts`),
+  aggregated by `definitions/index.ts`. Each is a pure
   `decide(ctx) → Weights` using indicators in `strategies/indicators.ts`, plus a `signalFormula`
-  string shown on the UI. `coreAssets` + `warmupDays` drive the data-inception date; `riskLevel`
+  string shown on the UI (keep this string in sync with `decide` — it is the displayed math).
+  `coreAssets` + `warmupDays` drive the data-inception date; `riskLevel`
   and `leverage` are NOT hardcoded — `StrategiesService` derives them from a canonical backtest
   (volatility → risk band; peak exposure → leverage). To add/tune a strategy, edit its file (or add
-  one and register it in `index.ts`). 19 strategies ship: 10 base (strategy 1 flagship) + 9
-  research-improved variants (`*-plus`) of strategies 2-10.
+  one and register it in `index.ts`). 10 strategies ship: strategy 1 is the flagship (3x Nasdaq
+  gated by QQQ's 20-day MA); strategies 2-10 are research-driven rules-based approaches.
 - **Engine**: `backtest/engine.ts` — share-based, NO-borrow daily simulation (leverage only via
   leveraged-ETF assets); ≤3 trades/month; DCA & lump-sum modes; produces a share/dollar trade
   ledger + holdings. `backtest/backtest.service.ts` orchestrates it (strategy + QQQ/VOO benchmarks);

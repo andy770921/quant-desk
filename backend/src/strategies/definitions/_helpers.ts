@@ -23,7 +23,7 @@ export function bestBy(
 
 /**
  * Inverse-volatility weights over the top-k assets by `score`, normalized to
- * `budget` (default 1.0). Used by the improved risk-parity / DAA variants.
+ * `budget` (default 1.0). Used by the risk-parity / DAA strategies.
  */
 export function inverseVolWeights(
   ctx: StrategyContext,

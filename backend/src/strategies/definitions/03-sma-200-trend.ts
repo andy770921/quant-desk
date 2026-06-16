@@ -1,47 +1,60 @@
 import { ASSET } from '../../market-data/assets';
 import { StrategyContext, StrategyDefinition, Weights } from '../strategy.types';
+import { bestBy, clamp, equityExposureWeights } from './_helpers';
 
-/** Strategy 3: classic 200-day SMA trend filter. */
+/**
+ * Strategy 3: 200-day SMA trend filter with vol-scaled equity exposure when in
+ * trend (steadier risk → higher Sharpe) and a dual safe-asset
+ * (best-trending Treasury) off-trend.
+ */
 export const sma200Trend: StrategyDefinition = {
   id: 'sma-200-trend',
   name: '200 日均線趨勢濾網',
   shortName: '200 日均線',
   category: 'trend-following',
-  description: '經典擇時：站上 200 日均線持有標普 500，跌破則轉入中期公債。',
+  description: '趨勢向上時以波動度目標調整曝險（0.5～1.5 倍），跌破則轉入最強趨勢公債。',
   longDescription:
-    '最廣為人知的長線趨勢濾網。當標普 500 收盤價高於 200 日均線時，市場處於多頭，便 100% 持有股票；' +
-    '一旦跌破 200 日均線就轉入中期公債避險。歷史上最大的跌幅幾乎都發生在 200 日均線之下，因此這條濾網能把最大回撤砍掉約一半，' +
-    '讓資金曲線更平滑。',
+    '經典的 200 日均線長線趨勢濾網。趨勢向上時不固定 100% 持股，而是用波動度目標（15%）動態調整曝險，' +
+    '上限 1.5 倍、下限 0.5 倍，讓投資組合風險更穩定、提升 Sharpe；跌破 200 日均線時，避險端在中期與長期公債中選趨勢較強者。' +
+    '歷史上最大的跌幅幾乎都發生在 200 日均線之下，這條濾網能把最大回撤砍掉約一半，讓資金曲線更平滑。',
   rules: [
-    '每日檢查標普 500 收盤價與 200 日均線。',
-    '收盤價 > 200 日均線 → 100% 美國大型股。',
-    '收盤價 < 200 日均線 → 100% 中期公債。',
+    '每日檢查標普 500 與其 200 日均線。',
+    '站上均線：曝險 = clamp(15% ÷ 20 日波動度, 0.5, 1.5)。',
+    '跌破均線：轉入中期/長期公債中 13612W 動能較強者 100%。',
     '每月最多交易 3 次。',
   ],
   caveats: [
-    '盤整年份（如 2011、2015、2018）容易來回被巴。',
-    '均線落後，重新進場通常較慢，會錯過反彈初段。',
+    '波動度目標使用落後資料；偶有 1.5 倍曝險於波動突升時放大短期回撤。',
+    '為配合無狀態引擎，未加入遲滯帶 (hysteresis)。',
   ],
   signalFormula: [
-    'price = level(USLC)',
-    'ma200 = sma(USLC, 200)',
-    '',
-    'if price > ma200:',
-    '    weight = { USLC: 1.0 }',
+    'if level(USLC) > sma(USLC, 200):',
+    '    E = clamp(0.15 / vol(USLC, 20), 0.5, 1.5)   // 目標曝險',
+    '    // >1 倍以 SSO(2x)+1x 達成，不融資',
+    '    weight = E<=1 ? { USLC: E } : { SSO: E-1, USLC: 2-E }',
     'else:',
-    '    weight = { ITT: 1.0 }   // 轉入中期公債避險',
+    '    safe = score13612W(LTT) > score13612W(ITT) ? LTT : ITT',
+    '    weight = { [safe]: 1.0 }',
   ].join('\n'),
-  tags: ['趨勢', '擇時', '低槓桿'],
+  tags: ['趨勢', '波動度', '擇時'],
   rebalance: 'daily',
-  universe: ['美國大型股', '中期公債'],
-  assets: [ASSET.USLC, ASSET.ITT],
-  coreAssets: [ASSET.USLC, ASSET.ITT],
-  warmupDays: 205,
+  universe: ['美國大型股', '2x 標普500 (SSO)', '中/長期公債'],
+  assets: [ASSET.USLC, ASSET.USLC2X, ASSET.ITT, ASSET.LTT],
+  coreAssets: [ASSET.USLC, ASSET.ITT, ASSET.LTT],
+  warmupDays: 260,
   cadence: 'daily',
   decide(ctx: StrategyContext): Weights {
     const price = ctx.level(ASSET.USLC);
     const ma = ctx.sma(ASSET.USLC, 200);
-    if (price === undefined || ma === undefined) return { [ASSET.ITT]: 1 };
-    return price > ma ? { [ASSET.USLC]: 1 } : { [ASSET.ITT]: 1 };
+    if (price === undefined || ma === undefined) {
+      return { [ASSET.ITT]: 1 };
+    }
+    if (price > ma) {
+      const rv = ctx.vol(ASSET.USLC, 20);
+      const e = rv && rv > 0 ? clamp(0.15 / rv, 0.5, 1.5) : 1;
+      return equityExposureWeights(e, ASSET.USLC, ASSET.USLC2X);
+    }
+    const safe = bestBy([ASSET.LTT, ASSET.ITT], (a) => ctx.score13612W(a), ASSET.ITT);
+    return { [safe]: 1 };
   },
 };

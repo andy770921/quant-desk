@@ -1,48 +1,67 @@
 import { ASSET } from '../../market-data/assets';
 import { StrategyContext, StrategyDefinition, Weights } from '../strategy.types';
 
-/** Strategy 9: Connors RSI(2) mean reversion gated by the 200-day SMA. */
+/**
+ * Strategy 9: Connors RSI(2) mean reversion gated by the 200-day SMA, with a
+ * graduated entry (deeper oversold → bigger position) and an idle bond sleeve
+ * instead of zero-yield cash on the many flat days.
+ */
 export const rsi2MeanReversion: StrategyDefinition = {
   id: 'rsi2-mean-reversion',
   name: 'RSI(2) 均值回歸',
   shortName: 'RSI(2) 抄底',
   category: 'mean-reversion',
-  description: 'Connors 短線抄底：在 200 日均線之上、RSI(2) 超賣時買進標普，反彈後轉現金。',
+  description: '分級進場：越超賣部位越大；空手時把資金停泊在趨勢向上的中期公債而非零息現金。',
   longDescription:
-    'Larry Connors 的短線均值回歸。只在主趨勢向上（標普 500 站上 200 日均線）時操作，當 2 日 RSI 跌破 10 代表短線超賣，' +
-    '買進標普；待短線回穩後轉回現金。買「上升趨勢中的急跌」歷史上有不錯的勝率，多數時間持有現金。',
+    'Larry Connors 的短線均值回歸。只在主趨勢向上（標普 500 站上 200 日均線）時操作，當 2 日 RSI 超賣時買進標普。' +
+    '進場採分級而非二元——RSI 越低部位越大（<5 滿倉、<10 七成五、<15 五成），提升交易品質與 Sharpe；' +
+    '同時在空手或部分持股的日子，把閒置資金停泊在趨勢向上的中期公債，消除大量空手日的現金拖累，提升總報酬而幾乎不增加回撤。',
   rules: [
-    '趨勢濾網：僅在標普 500 收盤價 > 200 日均線時做多。',
-    '進場：2 日 RSI < 10 → 100% 美國大型股。',
-    '出場：條件不再成立 → 100% 現金。',
+    '趨勢濾網：僅在標普 500 站上 200 日均線時做多。',
+    '分級進場：RSI(2) < 5 → 100%；< 10 → 75%；< 15 → 50% 美國大型股。',
+    '其餘資金停泊於中期公債（若趨勢且其動能 > 0）否則現金。',
     '每月最多交易 3 次。',
   ],
   caveats: [
-    '市場曝險低，總報酬通常較低。',
-    '無停損，超賣後若演變成崩盤（如 2020 年 2 月）會受傷。',
+    '仍無停損，超賣後若崩盤（如 2020 年 2 月）會受傷。',
+    '債券停泊在股債齊跌時亦有風險。',
     '此異常自 2010 年代起已逐漸式微。',
   ],
   signalFormula: [
-    'trend = level(USLC) > sma(USLC, 200)',
-    'r     = rsi(USLC, 2)',
-    '',
-    'if trend and r < 10:',
-    '    weight = { USLC: 1.0 }   // 超賣抄底',
-    'else:',
-    '    weight = { }             // 100% 現金',
+    'trend = level(USLC) > sma(USLC, 200); r = rsi(USLC, 2)',
+    'wE = (trend and r<15) ? (r<5 ? 1.0 : r<10 ? 0.75 : 0.50) : 0',
+    'weight = { USLC: wE }',
+    'rem = 1 - wE',
+    'if rem > 0:',
+    '    safe = (trend and score13612W(ITT) > 0) ? ITT : CASH',
+    '    weight[safe] += rem',
   ].join('\n'),
-  tags: ['均值回歸', '短線', '抄底'],
+  tags: ['均值回歸', '分級進場', '抄底'],
   rebalance: 'daily',
-  universe: ['美國大型股', '現金'],
-  assets: [ASSET.USLC, ASSET.CASH],
+  universe: ['美國大型股', '中期公債', '現金'],
+  assets: [ASSET.USLC, ASSET.ITT, ASSET.CASH],
   coreAssets: [ASSET.USLC],
-  warmupDays: 205,
+  warmupDays: 260,
   cadence: 'daily',
   decide(ctx: StrategyContext): Weights {
     const price = ctx.level(ASSET.USLC);
     const ma200 = ctx.sma(ASSET.USLC, 200);
     const r = ctx.rsi(ASSET.USLC, 2);
-    if (price === undefined || ma200 === undefined || r === undefined) return {};
-    return price > ma200 && r < 10 ? { [ASSET.USLC]: 1 } : {};
+    const trend = price !== undefined && ma200 !== undefined && price > ma200;
+    let wE = 0;
+    if (trend && r !== undefined && r < 15) {
+      wE = r < 5 ? 1 : r < 10 ? 0.75 : 0.5;
+    }
+    const weights: Weights = {};
+    if (wE > 0) weights[ASSET.USLC] = wE;
+    const rem = 1 - wE;
+    if (rem > 0.001) {
+      const ittScore = ctx.score13612W(ASSET.ITT);
+      if (trend && ittScore !== undefined && ittScore > 0) {
+        weights[ASSET.ITT] = Number(rem.toFixed(2));
+      }
+      // else: remainder stays in cash (engine default).
+    }
+    return weights;
   },
 };

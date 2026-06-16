@@ -7,7 +7,7 @@
 ## TL;DR — is the data enough?
 
 - **Enough for:** price/technical & asset-allocation strategies on **indices & ETFs**
-  (moving averages, momentum, volatility, RSI, rotation, risk parity). All 19 current
+  (moving averages, momentum, volatility, RSI, rotation, risk parity). All 10 current
   strategies are of this type. Daily **OHLCV** is stored (open/high/low/close/adjClose/volume).
 - **NOT enough for (data missing today):**
   - **Individual-stock selection** — only a small demo stock universe is fetched (5 names).
