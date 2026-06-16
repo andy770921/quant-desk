@@ -1,51 +1,52 @@
 import { ASSET } from '../../market-data/assets';
+import { DAYS } from '../indicators';
 import { StrategyContext, StrategyDefinition, Weights } from '../strategy.types';
-import { clamp, equityExposureWeights } from './_helpers';
+import { bestDefensive, equalWeight, topStocksByMomentum, trendUp } from './_helpers';
 
 /**
- * Strategy 7: volatility-targeted S&P 500 exposure with a 200-SMA trend gate
- * that throttles the target vol off-trend (cuts bear-market exposure); idle
- * capital sits in a trending Treasury.
+ * Strategy 7: Multifactor — Momentum × Low-Volatility, UNLEVERAGED. Among the
+ * top-40 momentum names it keeps the 15 with the LOWEST realized volatility,
+ * combining the momentum and low-volatility anomalies. This calmer book targets
+ * a higher Sharpe and gentler drawdown than raw momentum. Trend-gated to bonds.
  */
 export const volTargetSpy: StrategyDefinition = {
-  id: 'vol-target-spy',
-  name: '波動度目標 (標普500)',
-  shortName: '波動度目標',
+  id: 'stock-multifactor-lowvol',
+  name: '多因子低波選股',
+  shortName: '多因子低波',
   category: 'volatility',
   description:
-    '以 200 日均線趨勢閘門調整目標波動：趨勢向上 15%、跌破降為 5%；閒置資金改持趨勢公債。',
+    '先選出 12-1 動能最強的 40 檔，再從中挑波動最低的 15 檔等權持有（動能 × 低波動雙因子）；大盤跌破 200 日均線則轉入公債/黃金/現金。追求較高 Sharpe、較低回撤。',
   longDescription:
-    '波動度目標策略。每月以過去 20 日的已實現波動度估算市場風險，曝險 = 目標波動 ÷ 已實現波動，上限 2 倍、下限 0。' +
-    '單純波動度目標在空頭仍可能滿倉，因此加上 200 日均線趨勢閘門：趨勢向上時目標波動 15%，跌破均線時把目標波動降到 5%（大幅縮減曝險）；' +
-    '未投入的資金不再閒置於現金，而是配置到趨勢向上的中期公債，提升閒置資金報酬，兼顧降低回撤與提升 Sharpe。',
+    '結合兩個最穩健的選股因子：動能 (momentum) 與低波動 (low-volatility anomaly)。' +
+    '每月底先用 12-1 動能選出最強的 40 檔，再從中保留近半年實現波動最低的 15 檔等權持有——' +
+    '低波動因子長期提供更高的風險調整後報酬，搭配動能可同時抓「強勢」與「穩定」。' +
+    '一樣以大盤 200 日均線為總開關，跌破時全數轉入中期/長期公債、黃金、現金中趨勢最強者。' +
+    '相較純動能，本策略波動與回撤更低、Sharpe 更高。全程不使用槓桿。',
   rules: [
-    '目標波動：標普 500 站上 200 日均線 → 15%；跌破 → 5%。',
-    '股票曝險 = clamp(目標波動 ÷ 20 日波動度, 0, 2)，> 1 倍以 SSO(2x)+1x 達成，不融資。',
-    '未投入部分（1 − min(曝險,1)）配置於中期公債（若動能 > 0）否則現金。',
-    '每月再平衡一次。',
+    '每月底以 12-1 動能選出最強的 40 檔個股。',
+    '再從這 40 檔中挑近半年實現波動最低的 15 檔，等權持有。',
+    '大盤跌破 200 日均線：全數轉入公債/黃金/現金中近半年趨勢最強者。',
+    '每月再平衡一次，全程不使用槓桿。',
   ],
-  caveats: ['波動度與趨勢皆為落後指標。', '高波動突升時 2 倍曝險仍有尾端風險。'],
-  tags: ['波動度', '風險控管', '動態槓桿'],
+  caveats: [
+    '股票池為目前 S&P 500 成分股，存在存活者偏誤，歷史績效偏樂觀。',
+    '低波動股在急漲的強多頭中可能跑輸高 beta 名單。',
+    '僅有價量資料，無基本面品質因子。',
+  ],
+  tags: ['多因子', '低波動', '動能', '選股', '不使用槓桿'],
   rebalance: 'monthly',
-  universe: ['美國大型股', '2x 標普500 (SSO)', '中期公債', '現金'],
-  assets: [ASSET.USLC, ASSET.USLC2X, ASSET.ITT, ASSET.CASH],
-  coreAssets: [ASSET.USLC, ASSET.ITT],
-  warmupDays: 260,
+  universe: ['S&P 500 個股（約 500 檔）', '中/長期公債', '黃金', '現金'],
+  assets: [ASSET.NASDAQ, ASSET.ITT, ASSET.LTT, ASSET.GOLD, ASSET.CASH],
+  coreAssets: [ASSET.USLC],
+  warmupDays: DAYS.YEAR + 10,
   cadence: 'monthly',
   decide(ctx: StrategyContext): Weights {
-    const price = ctx.level(ASSET.USLC);
-    const ma = ctx.sma(ASSET.USLC, 200);
-    const rv = ctx.vol(ASSET.USLC, 20);
-    const inTrend = price !== undefined && ma !== undefined && price > ma;
-    const targetVol = inTrend ? 0.15 : 0.05;
-    const e = rv && rv > 0 ? clamp(targetVol / rv, 0, 2) : 1;
-    const weights = equityExposureWeights(e, ASSET.USLC, ASSET.USLC2X);
-    if (e < 1) {
-      const rem = 1 - e;
-      const ittScore = ctx.score13612W(ASSET.ITT);
-      if (ittScore !== undefined && ittScore > 0) weights[ASSET.ITT] = Number(rem.toFixed(4));
-      // else: remainder stays in cash (engine default).
-    }
-    return weights;
+    if (!trendUp(ctx, ASSET.USLC, 200)) return { [bestDefensive(ctx)]: 1 };
+    const ranked = topStocksByMomentum(ctx, 40)
+      .map((s) => ({ s, v: ctx.vol(s, DAYS.HALF_YEAR) }))
+      .filter((x): x is { s: typeof x.s; v: number } => x.v !== undefined)
+      .sort((a, b) => a.v - b.v);
+    const top = ranked.slice(0, 15).map((x) => x.s);
+    return top.length < 8 ? { [ASSET.NASDAQ]: 1 } : equalWeight(top);
   },
 };

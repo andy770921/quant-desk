@@ -1,32 +1,2978 @@
 [
   {
-    "symbol": "AAPL",
-    "firstDate": "1980-12-12",
-    "lastDate": "2026-06-15",
-    "count": 11468
+    "symbol": "MMM",
+    "firstDate": "1970-01-02",
+    "lastDate": "2026-06-12",
+    "count": 14233
   },
   {
-    "symbol": "MSFT",
-    "firstDate": "1986-03-13",
-    "lastDate": "2026-06-15",
-    "count": 10142
+    "symbol": "AOS",
+    "firstDate": "1983-09-30",
+    "lastDate": "2026-06-12",
+    "count": 10759
   },
   {
-    "symbol": "NVDA",
-    "firstDate": "1999-01-22",
-    "lastDate": "2026-06-15",
-    "count": 6891
+    "symbol": "ABT",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
   },
   {
-    "symbol": "AMZN",
-    "firstDate": "1997-05-15",
+    "symbol": "ABBV",
+    "firstDate": "2013-01-02",
     "lastDate": "2026-06-15",
-    "count": 7316
+    "count": 3383
+  },
+  {
+    "symbol": "ACN",
+    "firstDate": "2001-07-19",
+    "lastDate": "2026-06-12",
+    "count": 6262
+  },
+  {
+    "symbol": "ADBE",
+    "firstDate": "1986-08-13",
+    "lastDate": "2026-06-12",
+    "count": 10035
+  },
+  {
+    "symbol": "AMD",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "AES",
+    "firstDate": "1991-06-26",
+    "lastDate": "2026-06-12",
+    "count": 8804
+  },
+  {
+    "symbol": "AFL",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "A",
+    "firstDate": "1999-11-18",
+    "lastDate": "2026-06-12",
+    "count": 6681
+  },
+  {
+    "symbol": "APD",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "ABNB",
+    "firstDate": "2020-12-10",
+    "lastDate": "2026-06-15",
+    "count": 1383
+  },
+  {
+    "symbol": "AKAM",
+    "firstDate": "1999-10-29",
+    "lastDate": "2026-06-12",
+    "count": 6695
+  },
+  {
+    "symbol": "ALB",
+    "firstDate": "1994-02-22",
+    "lastDate": "2026-06-15",
+    "count": 8132
+  },
+  {
+    "symbol": "ARE",
+    "firstDate": "1997-05-28",
+    "lastDate": "2026-06-15",
+    "count": 7308
+  },
+  {
+    "symbol": "ALGN",
+    "firstDate": "2001-01-30",
+    "lastDate": "2026-06-12",
+    "count": 6380
+  },
+  {
+    "symbol": "ALLE",
+    "firstDate": "2013-11-18",
+    "lastDate": "2026-06-15",
+    "count": 3161
+  },
+  {
+    "symbol": "LNT",
+    "firstDate": "1973-02-21",
+    "lastDate": "2026-06-12",
+    "count": 13441
+  },
+  {
+    "symbol": "ALL",
+    "firstDate": "1993-06-03",
+    "lastDate": "2026-06-15",
+    "count": 8315
   },
   {
     "symbol": "GOOGL",
     "firstDate": "2004-08-19",
+    "lastDate": "2026-06-12",
+    "count": 5489
+  },
+  {
+    "symbol": "GOOG",
+    "firstDate": "2004-08-19",
     "lastDate": "2026-06-15",
     "count": 5490
+  },
+  {
+    "symbol": "MO",
+    "firstDate": "1970-01-02",
+    "lastDate": "2026-06-12",
+    "count": 14233
+  },
+  {
+    "symbol": "AMZN",
+    "firstDate": "1997-05-15",
+    "lastDate": "2026-06-12",
+    "count": 7315
+  },
+  {
+    "symbol": "AMCR",
+    "firstDate": "2012-05-15",
+    "lastDate": "2026-06-15",
+    "count": 3541
+  },
+  {
+    "symbol": "AEE",
+    "firstDate": "1998-01-02",
+    "lastDate": "2026-06-15",
+    "count": 7156
+  },
+  {
+    "symbol": "AEP",
+    "firstDate": "1970-01-02",
+    "lastDate": "2026-06-12",
+    "count": 14233
+  },
+  {
+    "symbol": "AXP",
+    "firstDate": "1972-06-01",
+    "lastDate": "2026-06-12",
+    "count": 13621
+  },
+  {
+    "symbol": "AIG",
+    "firstDate": "1973-01-02",
+    "lastDate": "2026-06-12",
+    "count": 13475
+  },
+  {
+    "symbol": "AMT",
+    "firstDate": "1998-02-27",
+    "lastDate": "2026-06-15",
+    "count": 7118
+  },
+  {
+    "symbol": "AWK",
+    "firstDate": "2008-04-23",
+    "lastDate": "2026-06-12",
+    "count": 4564
+  },
+  {
+    "symbol": "AMP",
+    "firstDate": "2005-09-15",
+    "lastDate": "2026-06-12",
+    "count": 5218
+  },
+  {
+    "symbol": "AME",
+    "firstDate": "1984-07-19",
+    "lastDate": "2026-06-12",
+    "count": 10557
+  },
+  {
+    "symbol": "AMGN",
+    "firstDate": "1983-06-17",
+    "lastDate": "2026-06-12",
+    "count": 10832
+  },
+  {
+    "symbol": "APH",
+    "firstDate": "1991-11-08",
+    "lastDate": "2026-06-12",
+    "count": 8709
+  },
+  {
+    "symbol": "ADI",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "AON",
+    "firstDate": "1980-06-02",
+    "lastDate": "2026-06-12",
+    "count": 11602
+  },
+  {
+    "symbol": "APA",
+    "firstDate": "1979-05-15",
+    "lastDate": "2026-06-12",
+    "count": 11867
+  },
+  {
+    "symbol": "APO",
+    "firstDate": "2011-03-30",
+    "lastDate": "2026-06-12",
+    "count": 3824
+  },
+  {
+    "symbol": "AAPL",
+    "firstDate": "1980-12-12",
+    "lastDate": "2026-06-12",
+    "count": 11467
+  },
+  {
+    "symbol": "AMAT",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "APP",
+    "firstDate": "2021-04-15",
+    "lastDate": "2026-06-15",
+    "count": 1298
+  },
+  {
+    "symbol": "APTV",
+    "firstDate": "2011-11-17",
+    "lastDate": "2026-06-12",
+    "count": 3662
+  },
+  {
+    "symbol": "ACGL",
+    "firstDate": "1995-09-14",
+    "lastDate": "2026-06-15",
+    "count": 7738
+  },
+  {
+    "symbol": "ADM",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "ARES",
+    "firstDate": "2014-05-02",
+    "lastDate": "2026-06-15",
+    "count": 3048
+  },
+  {
+    "symbol": "ANET",
+    "firstDate": "2014-06-06",
+    "lastDate": "2026-06-15",
+    "count": 3024
+  },
+  {
+    "symbol": "AJG",
+    "firstDate": "1984-06-20",
+    "lastDate": "2026-06-12",
+    "count": 10577
+  },
+  {
+    "symbol": "AIZ",
+    "firstDate": "2004-02-05",
+    "lastDate": "2026-06-12",
+    "count": 5624
+  },
+  {
+    "symbol": "T",
+    "firstDate": "1983-11-21",
+    "lastDate": "2026-06-12",
+    "count": 10723
+  },
+  {
+    "symbol": "ATO",
+    "firstDate": "1983-12-28",
+    "lastDate": "2026-06-12",
+    "count": 10698
+  },
+  {
+    "symbol": "ADSK",
+    "firstDate": "1985-06-28",
+    "lastDate": "2026-06-12",
+    "count": 10318
+  },
+  {
+    "symbol": "ADP",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "AZO",
+    "firstDate": "1991-04-02",
+    "lastDate": "2026-06-12",
+    "count": 8864
+  },
+  {
+    "symbol": "AVB",
+    "firstDate": "1994-03-11",
+    "lastDate": "2026-06-15",
+    "count": 8119
+  },
+  {
+    "symbol": "AVY",
+    "firstDate": "1973-02-21",
+    "lastDate": "2026-06-12",
+    "count": 13441
+  },
+  {
+    "symbol": "AXON",
+    "firstDate": "2001-06-19",
+    "lastDate": "2026-06-12",
+    "count": 6283
+  },
+  {
+    "symbol": "BKR",
+    "firstDate": "1987-04-06",
+    "lastDate": "2026-06-12",
+    "count": 9872
+  },
+  {
+    "symbol": "BALL",
+    "firstDate": "1973-02-21",
+    "lastDate": "2026-06-12",
+    "count": 13441
+  },
+  {
+    "symbol": "BAC",
+    "firstDate": "1973-02-21",
+    "lastDate": "2026-06-12",
+    "count": 13441
+  },
+  {
+    "symbol": "BAX",
+    "firstDate": "1981-10-27",
+    "lastDate": "2026-06-12",
+    "count": 11247
+  },
+  {
+    "symbol": "BDX",
+    "firstDate": "1973-02-21",
+    "lastDate": "2026-06-12",
+    "count": 13441
+  },
+  {
+    "symbol": "BRK-B",
+    "firstDate": "1996-05-09",
+    "lastDate": "2026-06-15",
+    "count": 7573
+  },
+  {
+    "symbol": "BBY",
+    "firstDate": "1985-04-18",
+    "lastDate": "2026-06-12",
+    "count": 10368
+  },
+  {
+    "symbol": "TECH",
+    "firstDate": "1989-02-09",
+    "lastDate": "2026-06-12",
+    "count": 9404
+  },
+  {
+    "symbol": "BIIB",
+    "firstDate": "1991-09-17",
+    "lastDate": "2026-06-12",
+    "count": 8747
+  },
+  {
+    "symbol": "BLK",
+    "firstDate": "1999-10-01",
+    "lastDate": "2026-06-12",
+    "count": 6715
+  },
+  {
+    "symbol": "BX",
+    "firstDate": "2007-06-22",
+    "lastDate": "2026-06-12",
+    "count": 4774
+  },
+  {
+    "symbol": "XYZ",
+    "firstDate": "2015-11-19",
+    "lastDate": "2026-06-15",
+    "count": 2656
+  },
+  {
+    "symbol": "BNY",
+    "firstDate": "1973-05-03",
+    "lastDate": "2026-06-12",
+    "count": 13391
+  },
+  {
+    "symbol": "BA",
+    "firstDate": "1970-01-02",
+    "lastDate": "2026-06-12",
+    "count": 14233
+  },
+  {
+    "symbol": "BKNG",
+    "firstDate": "1999-03-31",
+    "lastDate": "2026-06-12",
+    "count": 6843
+  },
+  {
+    "symbol": "BSX",
+    "firstDate": "1992-05-19",
+    "lastDate": "2026-06-12",
+    "count": 8577
+  },
+  {
+    "symbol": "BMY",
+    "firstDate": "1972-06-01",
+    "lastDate": "2026-06-12",
+    "count": 13621
+  },
+  {
+    "symbol": "AVGO",
+    "firstDate": "2009-08-06",
+    "lastDate": "2026-06-12",
+    "count": 4239
+  },
+  {
+    "symbol": "BR",
+    "firstDate": "2007-03-22",
+    "lastDate": "2026-06-12",
+    "count": 4838
+  },
+  {
+    "symbol": "BRO",
+    "firstDate": "1981-02-11",
+    "lastDate": "2026-06-12",
+    "count": 11426
+  },
+  {
+    "symbol": "BF-B",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "BLDR",
+    "firstDate": "2005-06-28",
+    "lastDate": "2026-06-12",
+    "count": 5273
+  },
+  {
+    "symbol": "BG",
+    "firstDate": "2001-08-02",
+    "lastDate": "2026-06-12",
+    "count": 6252
+  },
+  {
+    "symbol": "BXP",
+    "firstDate": "1997-06-18",
+    "lastDate": "2026-06-15",
+    "count": 7293
+  },
+  {
+    "symbol": "CHRW",
+    "firstDate": "1997-10-16",
+    "lastDate": "2026-06-12",
+    "count": 7208
+  },
+  {
+    "symbol": "CDNS",
+    "firstDate": "1987-06-10",
+    "lastDate": "2026-06-12",
+    "count": 9827
+  },
+  {
+    "symbol": "CPT",
+    "firstDate": "1993-07-22",
+    "lastDate": "2026-06-15",
+    "count": 8281
+  },
+  {
+    "symbol": "CPB",
+    "firstDate": "1973-02-21",
+    "lastDate": "2026-06-12",
+    "count": 13441
+  },
+  {
+    "symbol": "COF",
+    "firstDate": "1994-11-16",
+    "lastDate": "2026-06-15",
+    "count": 7946
+  },
+  {
+    "symbol": "CAH",
+    "firstDate": "1983-08-04",
+    "lastDate": "2026-06-12",
+    "count": 10799
+  },
+  {
+    "symbol": "CCL",
+    "firstDate": "1987-07-24",
+    "lastDate": "2026-06-12",
+    "count": 9796
+  },
+  {
+    "symbol": "CARR",
+    "firstDate": "2020-03-19",
+    "lastDate": "2026-06-15",
+    "count": 1568
+  },
+  {
+    "symbol": "CVNA",
+    "firstDate": "2017-04-28",
+    "lastDate": "2026-06-15",
+    "count": 2295
+  },
+  {
+    "symbol": "CASY",
+    "firstDate": "1983-10-20",
+    "lastDate": "2026-06-12",
+    "count": 10745
+  },
+  {
+    "symbol": "CAT",
+    "firstDate": "1970-01-02",
+    "lastDate": "2026-06-12",
+    "count": 14233
+  },
+  {
+    "symbol": "CBOE",
+    "firstDate": "2010-06-15",
+    "lastDate": "2026-06-12",
+    "count": 4024
+  },
+  {
+    "symbol": "CBRE",
+    "firstDate": "2004-06-10",
+    "lastDate": "2026-06-12",
+    "count": 5537
+  },
+  {
+    "symbol": "CDW",
+    "firstDate": "2013-06-27",
+    "lastDate": "2026-06-15",
+    "count": 3261
+  },
+  {
+    "symbol": "COR",
+    "firstDate": "1995-04-04",
+    "lastDate": "2026-06-12",
+    "count": 7850
+  },
+  {
+    "symbol": "CNC",
+    "firstDate": "2001-12-13",
+    "lastDate": "2026-06-12",
+    "count": 6163
+  },
+  {
+    "symbol": "CNP",
+    "firstDate": "1970-01-02",
+    "lastDate": "2026-06-12",
+    "count": 14233
+  },
+  {
+    "symbol": "CF",
+    "firstDate": "2005-08-11",
+    "lastDate": "2026-06-12",
+    "count": 5242
+  },
+  {
+    "symbol": "CRL",
+    "firstDate": "2000-06-23",
+    "lastDate": "2026-06-12",
+    "count": 6531
+  },
+  {
+    "symbol": "SCHW",
+    "firstDate": "1987-09-22",
+    "lastDate": "2026-06-12",
+    "count": 9755
+  },
+  {
+    "symbol": "CHTR",
+    "firstDate": "2010-01-05",
+    "lastDate": "2026-06-12",
+    "count": 4135
+  },
+  {
+    "symbol": "CVX",
+    "firstDate": "1970-01-02",
+    "lastDate": "2026-06-12",
+    "count": 14233
+  },
+  {
+    "symbol": "CMG",
+    "firstDate": "2006-01-26",
+    "lastDate": "2026-06-12",
+    "count": 5127
+  },
+  {
+    "symbol": "CB",
+    "firstDate": "1993-03-25",
+    "lastDate": "2026-06-15",
+    "count": 8363
+  },
+  {
+    "symbol": "CHD",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "CIEN",
+    "firstDate": "1997-02-07",
+    "lastDate": "2026-06-12",
+    "count": 7382
+  },
+  {
+    "symbol": "CI",
+    "firstDate": "1982-03-31",
+    "lastDate": "2026-06-12",
+    "count": 11140
+  },
+  {
+    "symbol": "CINF",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "CTAS",
+    "firstDate": "1983-08-19",
+    "lastDate": "2026-06-12",
+    "count": 10788
+  },
+  {
+    "symbol": "CSCO",
+    "firstDate": "1990-02-16",
+    "lastDate": "2026-06-12",
+    "count": 9146
+  },
+  {
+    "symbol": "C",
+    "firstDate": "1977-01-03",
+    "lastDate": "2026-06-12",
+    "count": 12464
+  },
+  {
+    "symbol": "CFG",
+    "firstDate": "2014-09-24",
+    "lastDate": "2026-06-15",
+    "count": 2948
+  },
+  {
+    "symbol": "CLX",
+    "firstDate": "1973-02-21",
+    "lastDate": "2026-06-12",
+    "count": 13441
+  },
+  {
+    "symbol": "CME",
+    "firstDate": "2002-12-06",
+    "lastDate": "2026-06-12",
+    "count": 5916
+  },
+  {
+    "symbol": "CMS",
+    "firstDate": "1973-02-21",
+    "lastDate": "2026-06-12",
+    "count": 13441
+  },
+  {
+    "symbol": "KO",
+    "firstDate": "1970-01-02",
+    "lastDate": "2026-06-12",
+    "count": 14233
+  },
+  {
+    "symbol": "CTSH",
+    "firstDate": "1998-06-19",
+    "lastDate": "2026-06-12",
+    "count": 7039
+  },
+  {
+    "symbol": "COHR",
+    "firstDate": "1987-10-02",
+    "lastDate": "2026-06-12",
+    "count": 9747
+  },
+  {
+    "symbol": "COIN",
+    "firstDate": "2021-04-14",
+    "lastDate": "2026-06-15",
+    "count": 1299
+  },
+  {
+    "symbol": "CL",
+    "firstDate": "1973-05-02",
+    "lastDate": "2026-06-12",
+    "count": 13392
+  },
+  {
+    "symbol": "CMCSA",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "FIX",
+    "firstDate": "1997-06-27",
+    "lastDate": "2026-06-15",
+    "count": 7286
+  },
+  {
+    "symbol": "CAG",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "COP",
+    "firstDate": "1981-12-31",
+    "lastDate": "2026-06-12",
+    "count": 11202
+  },
+  {
+    "symbol": "ED",
+    "firstDate": "1970-01-02",
+    "lastDate": "2026-06-12",
+    "count": 14233
+  },
+  {
+    "symbol": "STZ",
+    "firstDate": "1992-03-17",
+    "lastDate": "2026-06-12",
+    "count": 8621
+  },
+  {
+    "symbol": "CEG",
+    "firstDate": "2022-01-19",
+    "lastDate": "2026-06-15",
+    "count": 1105
+  },
+  {
+    "symbol": "COO",
+    "firstDate": "1983-01-21",
+    "lastDate": "2026-06-12",
+    "count": 10934
+  },
+  {
+    "symbol": "CPRT",
+    "firstDate": "1994-03-17",
+    "lastDate": "2026-06-12",
+    "count": 8114
+  },
+  {
+    "symbol": "GLW",
+    "firstDate": "1981-12-31",
+    "lastDate": "2026-06-12",
+    "count": 11202
+  },
+  {
+    "symbol": "CPAY",
+    "firstDate": "2010-12-15",
+    "lastDate": "2026-06-12",
+    "count": 3896
+  },
+  {
+    "symbol": "CTVA",
+    "firstDate": "2019-05-24",
+    "lastDate": "2026-06-15",
+    "count": 1774
+  },
+  {
+    "symbol": "CSGP",
+    "firstDate": "1998-07-01",
+    "lastDate": "2026-06-12",
+    "count": 7031
+  },
+  {
+    "symbol": "COST",
+    "firstDate": "1986-07-09",
+    "lastDate": "2026-06-12",
+    "count": 10060
+  },
+  {
+    "symbol": "CRH",
+    "firstDate": "1989-07-13",
+    "lastDate": "2026-06-12",
+    "count": 9298
+  },
+  {
+    "symbol": "CRWD",
+    "firstDate": "2019-06-12",
+    "lastDate": "2026-06-15",
+    "count": 1762
+  },
+  {
+    "symbol": "CCI",
+    "firstDate": "1998-08-18",
+    "lastDate": "2026-06-12",
+    "count": 6998
+  },
+  {
+    "symbol": "CSX",
+    "firstDate": "1980-11-03",
+    "lastDate": "2026-06-12",
+    "count": 11494
+  },
+  {
+    "symbol": "CMI",
+    "firstDate": "1973-02-21",
+    "lastDate": "2026-06-12",
+    "count": 13441
+  },
+  {
+    "symbol": "CVS",
+    "firstDate": "1973-02-21",
+    "lastDate": "2026-06-12",
+    "count": 13441
+  },
+  {
+    "symbol": "DHR",
+    "firstDate": "1978-12-29",
+    "lastDate": "2026-06-12",
+    "count": 11961
+  },
+  {
+    "symbol": "DRI",
+    "firstDate": "1995-05-09",
+    "lastDate": "2026-06-15",
+    "count": 7827
+  },
+  {
+    "symbol": "DDOG",
+    "firstDate": "2019-09-19",
+    "lastDate": "2026-06-15",
+    "count": 1693
+  },
+  {
+    "symbol": "DVA",
+    "firstDate": "1995-10-31",
+    "lastDate": "2026-06-15",
+    "count": 7705
+  },
+  {
+    "symbol": "DECK",
+    "firstDate": "1993-10-15",
+    "lastDate": "2026-06-12",
+    "count": 8220
+  },
+  {
+    "symbol": "DE",
+    "firstDate": "1972-06-01",
+    "lastDate": "2026-06-12",
+    "count": 13621
+  },
+  {
+    "symbol": "DELL",
+    "firstDate": "2016-08-17",
+    "lastDate": "2026-06-15",
+    "count": 2470
+  },
+  {
+    "symbol": "DAL",
+    "firstDate": "2007-05-03",
+    "lastDate": "2026-06-12",
+    "count": 4809
+  },
+  {
+    "symbol": "DVN",
+    "firstDate": "1985-07-22",
+    "lastDate": "2026-06-12",
+    "count": 10303
+  },
+  {
+    "symbol": "DXCM",
+    "firstDate": "2005-04-14",
+    "lastDate": "2026-06-12",
+    "count": 5325
+  },
+  {
+    "symbol": "FANG",
+    "firstDate": "2012-10-12",
+    "lastDate": "2026-06-15",
+    "count": 3436
+  },
+  {
+    "symbol": "DLR",
+    "firstDate": "2004-10-29",
+    "lastDate": "2026-06-12",
+    "count": 5439
+  },
+  {
+    "symbol": "DG",
+    "firstDate": "2009-11-13",
+    "lastDate": "2026-06-12",
+    "count": 4169
+  },
+  {
+    "symbol": "DLTR",
+    "firstDate": "1995-03-07",
+    "lastDate": "2026-06-12",
+    "count": 7870
+  },
+  {
+    "symbol": "D",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "DPZ",
+    "firstDate": "2004-07-13",
+    "lastDate": "2026-06-12",
+    "count": 5516
+  },
+  {
+    "symbol": "DASH",
+    "firstDate": "2020-12-09",
+    "lastDate": "2026-06-15",
+    "count": 1384
+  },
+  {
+    "symbol": "DOV",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "DOW",
+    "firstDate": "2019-03-20",
+    "lastDate": "2026-06-15",
+    "count": 1820
+  },
+  {
+    "symbol": "DHI",
+    "firstDate": "1992-06-05",
+    "lastDate": "2026-06-12",
+    "count": 8565
+  },
+  {
+    "symbol": "DTE",
+    "firstDate": "1970-01-02",
+    "lastDate": "2026-06-12",
+    "count": 14233
+  },
+  {
+    "symbol": "DUK",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "DD",
+    "firstDate": "1972-06-01",
+    "lastDate": "2026-06-12",
+    "count": 13621
+  },
+  {
+    "symbol": "ETN",
+    "firstDate": "1972-06-01",
+    "lastDate": "2026-06-12",
+    "count": 13621
+  },
+  {
+    "symbol": "EBAY",
+    "firstDate": "1998-09-24",
+    "lastDate": "2026-06-12",
+    "count": 6972
+  },
+  {
+    "symbol": "SATS",
+    "firstDate": "2008-01-02",
+    "lastDate": "2026-06-12",
+    "count": 4641
+  },
+  {
+    "symbol": "ECL",
+    "firstDate": "1973-02-21",
+    "lastDate": "2026-06-12",
+    "count": 13441
+  },
+  {
+    "symbol": "EIX",
+    "firstDate": "1973-05-03",
+    "lastDate": "2026-06-12",
+    "count": 13391
+  },
+  {
+    "symbol": "EW",
+    "firstDate": "2000-03-27",
+    "lastDate": "2026-06-12",
+    "count": 6593
+  },
+  {
+    "symbol": "EA",
+    "firstDate": "1989-09-20",
+    "lastDate": "2026-06-12",
+    "count": 9250
+  },
+  {
+    "symbol": "ELV",
+    "firstDate": "2001-10-30",
+    "lastDate": "2026-06-12",
+    "count": 6194
+  },
+  {
+    "symbol": "EME",
+    "firstDate": "1995-01-10",
+    "lastDate": "2026-06-12",
+    "count": 7909
+  },
+  {
+    "symbol": "EMR",
+    "firstDate": "1972-06-01",
+    "lastDate": "2026-06-12",
+    "count": 13621
+  },
+  {
+    "symbol": "ETR",
+    "firstDate": "1972-06-01",
+    "lastDate": "2026-06-12",
+    "count": 13621
+  },
+  {
+    "symbol": "EOG",
+    "firstDate": "1989-10-04",
+    "lastDate": "2026-06-12",
+    "count": 9240
+  },
+  {
+    "symbol": "EQT",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "EFX",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "EQIX",
+    "firstDate": "2000-08-11",
+    "lastDate": "2026-06-12",
+    "count": 6497
+  },
+  {
+    "symbol": "EQR",
+    "firstDate": "1993-08-12",
+    "lastDate": "2026-06-15",
+    "count": 8266
+  },
+  {
+    "symbol": "ERIE",
+    "firstDate": "1995-10-02",
+    "lastDate": "2026-06-15",
+    "count": 7726
+  },
+  {
+    "symbol": "ESS",
+    "firstDate": "1994-06-07",
+    "lastDate": "2026-06-15",
+    "count": 8060
+  },
+  {
+    "symbol": "EL",
+    "firstDate": "1995-11-17",
+    "lastDate": "2026-06-15",
+    "count": 7692
+  },
+  {
+    "symbol": "EG",
+    "firstDate": "1995-10-03",
+    "lastDate": "2026-06-15",
+    "count": 7725
+  },
+  {
+    "symbol": "EVRG",
+    "firstDate": "1973-02-21",
+    "lastDate": "2026-06-12",
+    "count": 13441
+  },
+  {
+    "symbol": "ES",
+    "firstDate": "1973-02-21",
+    "lastDate": "2026-06-12",
+    "count": 13441
+  },
+  {
+    "symbol": "EXC",
+    "firstDate": "1973-05-02",
+    "lastDate": "2026-06-12",
+    "count": 13392
+  },
+  {
+    "symbol": "EXE",
+    "firstDate": "2021-02-10",
+    "lastDate": "2026-06-15",
+    "count": 1342
+  },
+  {
+    "symbol": "EXPE",
+    "firstDate": "2005-07-21",
+    "lastDate": "2026-06-12",
+    "count": 5257
+  },
+  {
+    "symbol": "EXPD",
+    "firstDate": "1984-09-26",
+    "lastDate": "2026-06-12",
+    "count": 10509
+  },
+  {
+    "symbol": "EXR",
+    "firstDate": "2004-08-16",
+    "lastDate": "2026-06-12",
+    "count": 5492
+  },
+  {
+    "symbol": "XOM",
+    "firstDate": "1970-01-02",
+    "lastDate": "2026-06-12",
+    "count": 14233
+  },
+  {
+    "symbol": "FFIV",
+    "firstDate": "1999-06-04",
+    "lastDate": "2026-06-12",
+    "count": 6798
+  },
+  {
+    "symbol": "FDS",
+    "firstDate": "1996-06-28",
+    "lastDate": "2026-06-15",
+    "count": 7538
+  },
+  {
+    "symbol": "FICO",
+    "firstDate": "1987-07-22",
+    "lastDate": "2026-06-12",
+    "count": 9798
+  },
+  {
+    "symbol": "FAST",
+    "firstDate": "1987-08-20",
+    "lastDate": "2026-06-12",
+    "count": 9777
+  },
+  {
+    "symbol": "FRT",
+    "firstDate": "1973-05-03",
+    "lastDate": "2026-06-12",
+    "count": 13391
+  },
+  {
+    "symbol": "FDX",
+    "firstDate": "1978-04-12",
+    "lastDate": "2026-06-12",
+    "count": 12143
+  },
+  {
+    "symbol": "FIS",
+    "firstDate": "2001-06-20",
+    "lastDate": "2026-06-12",
+    "count": 6282
+  },
+  {
+    "symbol": "FITB",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "FSLR",
+    "firstDate": "2006-11-17",
+    "lastDate": "2026-06-12",
+    "count": 4921
+  },
+  {
+    "symbol": "FE",
+    "firstDate": "1997-11-10",
+    "lastDate": "2026-06-15",
+    "count": 7192
+  },
+  {
+    "symbol": "FISV",
+    "firstDate": "1986-09-25",
+    "lastDate": "2026-06-12",
+    "count": 10004
+  },
+  {
+    "symbol": "F",
+    "firstDate": "1972-06-01",
+    "lastDate": "2026-06-12",
+    "count": 13621
+  },
+  {
+    "symbol": "FTNT",
+    "firstDate": "2009-11-18",
+    "lastDate": "2026-06-12",
+    "count": 4166
+  },
+  {
+    "symbol": "FTV",
+    "firstDate": "2016-07-05",
+    "lastDate": "2026-06-15",
+    "count": 2501
+  },
+  {
+    "symbol": "FOXA",
+    "firstDate": "2019-03-12",
+    "lastDate": "2026-06-15",
+    "count": 1826
+  },
+  {
+    "symbol": "FOX",
+    "firstDate": "2019-03-13",
+    "lastDate": "2026-06-15",
+    "count": 1825
+  },
+  {
+    "symbol": "BEN",
+    "firstDate": "1983-09-23",
+    "lastDate": "2026-06-12",
+    "count": 10764
+  },
+  {
+    "symbol": "FCX",
+    "firstDate": "1995-07-10",
+    "lastDate": "2026-06-15",
+    "count": 7785
+  },
+  {
+    "symbol": "GRMN",
+    "firstDate": "2000-12-08",
+    "lastDate": "2026-06-12",
+    "count": 6414
+  },
+  {
+    "symbol": "IT",
+    "firstDate": "1993-10-05",
+    "lastDate": "2026-06-12",
+    "count": 8228
+  },
+  {
+    "symbol": "GE",
+    "firstDate": "1970-01-02",
+    "lastDate": "2026-06-12",
+    "count": 14233
+  },
+  {
+    "symbol": "GEHC",
+    "firstDate": "2022-12-15",
+    "lastDate": "2026-06-15",
+    "count": 876
+  },
+  {
+    "symbol": "GEV",
+    "firstDate": "2024-03-27",
+    "lastDate": "2026-06-12",
+    "count": 555
+  },
+  {
+    "symbol": "GEN",
+    "firstDate": "1989-06-23",
+    "lastDate": "2026-06-12",
+    "count": 9311
+  },
+  {
+    "symbol": "GNRC",
+    "firstDate": "2010-02-11",
+    "lastDate": "2026-06-12",
+    "count": 4109
+  },
+  {
+    "symbol": "GD",
+    "firstDate": "1970-01-02",
+    "lastDate": "2026-06-12",
+    "count": 14233
+  },
+  {
+    "symbol": "GIS",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "GM",
+    "firstDate": "2010-11-18",
+    "lastDate": "2026-06-12",
+    "count": 3914
+  },
+  {
+    "symbol": "GPC",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "GILD",
+    "firstDate": "1992-01-22",
+    "lastDate": "2026-06-12",
+    "count": 8659
+  },
+  {
+    "symbol": "GPN",
+    "firstDate": "2001-01-16",
+    "lastDate": "2026-06-12",
+    "count": 6390
+  },
+  {
+    "symbol": "GL",
+    "firstDate": "1980-10-01",
+    "lastDate": "2026-06-12",
+    "count": 11517
+  },
+  {
+    "symbol": "GDDY",
+    "firstDate": "2015-03-31",
+    "lastDate": "2026-06-15",
+    "count": 2819
+  },
+  {
+    "symbol": "GS",
+    "firstDate": "1999-05-04",
+    "lastDate": "2026-06-12",
+    "count": 6820
+  },
+  {
+    "symbol": "HAL",
+    "firstDate": "1972-06-01",
+    "lastDate": "2026-06-12",
+    "count": 13621
+  },
+  {
+    "symbol": "HIG",
+    "firstDate": "1995-12-15",
+    "lastDate": "2026-06-15",
+    "count": 7673
+  },
+  {
+    "symbol": "HAS",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "HCA",
+    "firstDate": "2011-03-10",
+    "lastDate": "2026-06-12",
+    "count": 3838
+  },
+  {
+    "symbol": "DOC",
+    "firstDate": "1985-05-23",
+    "lastDate": "2026-06-12",
+    "count": 10343
+  },
+  {
+    "symbol": "HSIC",
+    "firstDate": "1995-11-03",
+    "lastDate": "2026-06-15",
+    "count": 7702
+  },
+  {
+    "symbol": "HSY",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "HPE",
+    "firstDate": "2015-10-19",
+    "lastDate": "2026-06-15",
+    "count": 2679
+  },
+  {
+    "symbol": "HLT",
+    "firstDate": "2013-12-12",
+    "lastDate": "2026-06-15",
+    "count": 3144
+  },
+  {
+    "symbol": "HD",
+    "firstDate": "1981-09-22",
+    "lastDate": "2026-06-12",
+    "count": 11272
+  },
+  {
+    "symbol": "HON",
+    "firstDate": "1970-01-02",
+    "lastDate": "2026-06-12",
+    "count": 14233
+  },
+  {
+    "symbol": "HRL",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "HST",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "HWM",
+    "firstDate": "2016-11-01",
+    "lastDate": "2026-06-12",
+    "count": 2416
+  },
+  {
+    "symbol": "HPQ",
+    "firstDate": "1970-01-02",
+    "lastDate": "2026-06-12",
+    "count": 14233
+  },
+  {
+    "symbol": "HUBB",
+    "firstDate": "1972-06-05",
+    "lastDate": "2026-06-15",
+    "count": 13499
+  },
+  {
+    "symbol": "HUM",
+    "firstDate": "1981-12-31",
+    "lastDate": "2026-06-12",
+    "count": 11202
+  },
+  {
+    "symbol": "HBAN",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "HII",
+    "firstDate": "2011-03-22",
+    "lastDate": "2026-06-12",
+    "count": 3830
+  },
+  {
+    "symbol": "IBM",
+    "firstDate": "1970-01-02",
+    "lastDate": "2026-06-12",
+    "count": 14233
+  },
+  {
+    "symbol": "IEX",
+    "firstDate": "1989-06-02",
+    "lastDate": "2026-06-12",
+    "count": 9326
+  },
+  {
+    "symbol": "IDXX",
+    "firstDate": "1991-06-21",
+    "lastDate": "2026-06-12",
+    "count": 8807
+  },
+  {
+    "symbol": "ITW",
+    "firstDate": "1973-03-13",
+    "lastDate": "2026-06-12",
+    "count": 13427
+  },
+  {
+    "symbol": "INCY",
+    "firstDate": "1993-11-04",
+    "lastDate": "2026-06-12",
+    "count": 8206
+  },
+  {
+    "symbol": "IR",
+    "firstDate": "2017-05-12",
+    "lastDate": "2026-06-15",
+    "count": 2285
+  },
+  {
+    "symbol": "PODD",
+    "firstDate": "2007-05-15",
+    "lastDate": "2026-06-12",
+    "count": 4801
+  },
+  {
+    "symbol": "INTC",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "IBKR",
+    "firstDate": "2007-05-04",
+    "lastDate": "2026-06-12",
+    "count": 4808
+  },
+  {
+    "symbol": "ICE",
+    "firstDate": "2005-11-16",
+    "lastDate": "2026-06-12",
+    "count": 5174
+  },
+  {
+    "symbol": "IFF",
+    "firstDate": "1974-12-17",
+    "lastDate": "2026-06-12",
+    "count": 12980
+  },
+  {
+    "symbol": "IP",
+    "firstDate": "1970-01-02",
+    "lastDate": "2026-06-12",
+    "count": 14233
+  },
+  {
+    "symbol": "INTU",
+    "firstDate": "1993-03-12",
+    "lastDate": "2026-06-12",
+    "count": 8371
+  },
+  {
+    "symbol": "ISRG",
+    "firstDate": "2000-06-16",
+    "lastDate": "2026-06-12",
+    "count": 6536
+  },
+  {
+    "symbol": "IVZ",
+    "firstDate": "1995-08-25",
+    "lastDate": "2026-06-15",
+    "count": 7751
+  },
+  {
+    "symbol": "INVH",
+    "firstDate": "2017-02-01",
+    "lastDate": "2026-06-15",
+    "count": 2355
+  },
+  {
+    "symbol": "IQV",
+    "firstDate": "2013-05-09",
+    "lastDate": "2026-06-15",
+    "count": 3295
+  },
+  {
+    "symbol": "IRM",
+    "firstDate": "1996-02-01",
+    "lastDate": "2026-06-12",
+    "count": 7640
+  },
+  {
+    "symbol": "JBHT",
+    "firstDate": "1983-11-22",
+    "lastDate": "2026-06-12",
+    "count": 10722
+  },
+  {
+    "symbol": "JBL",
+    "firstDate": "1993-05-03",
+    "lastDate": "2026-06-12",
+    "count": 8336
+  },
+  {
+    "symbol": "JKHY",
+    "firstDate": "1985-11-20",
+    "lastDate": "2026-06-12",
+    "count": 10218
+  },
+  {
+    "symbol": "J",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "JNJ",
+    "firstDate": "1970-01-02",
+    "lastDate": "2026-06-12",
+    "count": 14233
+  },
+  {
+    "symbol": "JCI",
+    "firstDate": "1987-09-28",
+    "lastDate": "2026-06-12",
+    "count": 9751
+  },
+  {
+    "symbol": "JPM",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "KVUE",
+    "firstDate": "2023-05-04",
+    "lastDate": "2026-06-15",
+    "count": 781
+  },
+  {
+    "symbol": "KDP",
+    "firstDate": "2008-05-07",
+    "lastDate": "2026-06-12",
+    "count": 4554
+  },
+  {
+    "symbol": "KEY",
+    "firstDate": "1987-11-05",
+    "lastDate": "2026-06-12",
+    "count": 9723
+  },
+  {
+    "symbol": "KEYS",
+    "firstDate": "2014-10-20",
+    "lastDate": "2026-06-15",
+    "count": 2930
+  },
+  {
+    "symbol": "KMB",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "KIM",
+    "firstDate": "1991-11-22",
+    "lastDate": "2026-06-12",
+    "count": 8699
+  },
+  {
+    "symbol": "KMI",
+    "firstDate": "2011-02-11",
+    "lastDate": "2026-06-12",
+    "count": 3856
+  },
+  {
+    "symbol": "KKR",
+    "firstDate": "2010-07-15",
+    "lastDate": "2026-06-12",
+    "count": 4003
+  },
+  {
+    "symbol": "KLAC",
+    "firstDate": "1980-10-08",
+    "lastDate": "2026-06-15",
+    "count": 11513
+  },
+  {
+    "symbol": "KHC",
+    "firstDate": "2015-07-06",
+    "lastDate": "2026-06-15",
+    "count": 2753
+  },
+  {
+    "symbol": "KR",
+    "firstDate": "1970-01-02",
+    "lastDate": "2026-06-12",
+    "count": 14233
+  },
+  {
+    "symbol": "LHX",
+    "firstDate": "1981-12-31",
+    "lastDate": "2026-06-12",
+    "count": 11202
+  },
+  {
+    "symbol": "LH",
+    "firstDate": "1990-03-29",
+    "lastDate": "2026-06-12",
+    "count": 9118
+  },
+  {
+    "symbol": "LRCX",
+    "firstDate": "1984-05-04",
+    "lastDate": "2026-06-12",
+    "count": 10609
+  },
+  {
+    "symbol": "LVS",
+    "firstDate": "2004-12-15",
+    "lastDate": "2026-06-12",
+    "count": 5407
+  },
+  {
+    "symbol": "LDOS",
+    "firstDate": "2006-10-17",
+    "lastDate": "2026-06-12",
+    "count": 4944
+  },
+  {
+    "symbol": "LEN",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "LII",
+    "firstDate": "1999-07-29",
+    "lastDate": "2026-06-12",
+    "count": 6760
+  },
+  {
+    "symbol": "LLY",
+    "firstDate": "1972-06-01",
+    "lastDate": "2026-06-12",
+    "count": 13621
+  },
+  {
+    "symbol": "LIN",
+    "firstDate": "1992-06-17",
+    "lastDate": "2026-06-12",
+    "count": 8557
+  },
+  {
+    "symbol": "LYV",
+    "firstDate": "2005-12-21",
+    "lastDate": "2026-06-12",
+    "count": 5150
+  },
+  {
+    "symbol": "LMT",
+    "firstDate": "1970-01-02",
+    "lastDate": "2026-06-12",
+    "count": 14232
+  },
+  {
+    "symbol": "L",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "LOW",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "LULU",
+    "firstDate": "2007-07-27",
+    "lastDate": "2026-06-12",
+    "count": 4750
+  },
+  {
+    "symbol": "LITE",
+    "firstDate": "2015-07-23",
+    "lastDate": "2026-06-15",
+    "count": 2740
+  },
+  {
+    "symbol": "LYB",
+    "firstDate": "2010-04-28",
+    "lastDate": "2026-06-12",
+    "count": 4057
+  },
+  {
+    "symbol": "MTB",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "MPC",
+    "firstDate": "2011-06-24",
+    "lastDate": "2026-06-12",
+    "count": 3764
+  },
+  {
+    "symbol": "MAR",
+    "firstDate": "1998-03-23",
+    "lastDate": "2026-06-15",
+    "count": 7102
+  },
+  {
+    "symbol": "MRSH",
+    "firstDate": "1973-02-21",
+    "lastDate": "2026-06-12",
+    "count": 13441
+  },
+  {
+    "symbol": "MLM",
+    "firstDate": "1994-02-17",
+    "lastDate": "2026-06-15",
+    "count": 8134
+  },
+  {
+    "symbol": "MAS",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "MA",
+    "firstDate": "2006-05-25",
+    "lastDate": "2026-06-12",
+    "count": 5044
+  },
+  {
+    "symbol": "MKC",
+    "firstDate": "1973-02-21",
+    "lastDate": "2026-06-12",
+    "count": 13441
+  },
+  {
+    "symbol": "MCD",
+    "firstDate": "1970-01-02",
+    "lastDate": "2026-06-12",
+    "count": 14233
+  },
+  {
+    "symbol": "MCK",
+    "firstDate": "1994-11-10",
+    "lastDate": "2026-06-15",
+    "count": 7950
+  },
+  {
+    "symbol": "MDT",
+    "firstDate": "1973-05-02",
+    "lastDate": "2026-06-12",
+    "count": 13392
+  },
+  {
+    "symbol": "MRK",
+    "firstDate": "1970-01-02",
+    "lastDate": "2026-06-12",
+    "count": 14233
+  },
+  {
+    "symbol": "META",
+    "firstDate": "2012-05-18",
+    "lastDate": "2026-06-15",
+    "count": 3538
+  },
+  {
+    "symbol": "MET",
+    "firstDate": "2000-04-05",
+    "lastDate": "2026-06-12",
+    "count": 6586
+  },
+  {
+    "symbol": "MTD",
+    "firstDate": "1997-11-14",
+    "lastDate": "2026-06-15",
+    "count": 7188
+  },
+  {
+    "symbol": "MGM",
+    "firstDate": "1988-05-02",
+    "lastDate": "2026-06-12",
+    "count": 9601
+  },
+  {
+    "symbol": "MCHP",
+    "firstDate": "1993-03-19",
+    "lastDate": "2026-06-12",
+    "count": 8366
+  },
+  {
+    "symbol": "MU",
+    "firstDate": "1984-06-01",
+    "lastDate": "2026-06-12",
+    "count": 10590
+  },
+  {
+    "symbol": "MSFT",
+    "firstDate": "1986-03-13",
+    "lastDate": "2026-06-12",
+    "count": 10141
+  },
+  {
+    "symbol": "MAA",
+    "firstDate": "1994-01-28",
+    "lastDate": "2026-06-15",
+    "count": 8148
+  },
+  {
+    "symbol": "MRNA",
+    "firstDate": "2018-12-07",
+    "lastDate": "2026-06-15",
+    "count": 1889
+  },
+  {
+    "symbol": "TAP",
+    "firstDate": "1975-06-12",
+    "lastDate": "2026-06-12",
+    "count": 12858
+  },
+  {
+    "symbol": "MDLZ",
+    "firstDate": "2001-06-13",
+    "lastDate": "2026-06-12",
+    "count": 6287
+  },
+  {
+    "symbol": "MPWR",
+    "firstDate": "2004-11-19",
+    "lastDate": "2026-06-12",
+    "count": 5424
+  },
+  {
+    "symbol": "MNST",
+    "firstDate": "1985-12-09",
+    "lastDate": "2026-06-15",
+    "count": 10207
+  },
+  {
+    "symbol": "MCO",
+    "firstDate": "1994-10-31",
+    "lastDate": "2026-06-12",
+    "count": 7957
+  },
+  {
+    "symbol": "MS",
+    "firstDate": "1993-02-23",
+    "lastDate": "2026-06-12",
+    "count": 8384
+  },
+  {
+    "symbol": "MOS",
+    "firstDate": "1988-01-26",
+    "lastDate": "2026-06-12",
+    "count": 9668
+  },
+  {
+    "symbol": "MSI",
+    "firstDate": "1970-01-02",
+    "lastDate": "2026-06-12",
+    "count": 14233
+  },
+  {
+    "symbol": "MSCI",
+    "firstDate": "2007-11-15",
+    "lastDate": "2026-06-12",
+    "count": 4672
+  },
+  {
+    "symbol": "NDAQ",
+    "firstDate": "2002-07-01",
+    "lastDate": "2026-06-12",
+    "count": 6027
+  },
+  {
+    "symbol": "NTAP",
+    "firstDate": "1995-11-21",
+    "lastDate": "2026-06-15",
+    "count": 7690
+  },
+  {
+    "symbol": "NFLX",
+    "firstDate": "2002-05-23",
+    "lastDate": "2026-06-12",
+    "count": 6053
+  },
+  {
+    "symbol": "NEM",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "NWSA",
+    "firstDate": "2013-06-19",
+    "lastDate": "2026-06-15",
+    "count": 3267
+  },
+  {
+    "symbol": "NWS",
+    "firstDate": "2013-06-19",
+    "lastDate": "2026-06-15",
+    "count": 3267
+  },
+  {
+    "symbol": "NEE",
+    "firstDate": "1973-02-21",
+    "lastDate": "2026-06-12",
+    "count": 13441
+  },
+  {
+    "symbol": "NKE",
+    "firstDate": "1980-12-02",
+    "lastDate": "2026-06-12",
+    "count": 11475
+  },
+  {
+    "symbol": "NI",
+    "firstDate": "1973-02-21",
+    "lastDate": "2026-06-12",
+    "count": 13441
+  },
+  {
+    "symbol": "NDSN",
+    "firstDate": "1980-03-18",
+    "lastDate": "2026-06-12",
+    "count": 11654
+  },
+  {
+    "symbol": "NSC",
+    "firstDate": "1982-06-02",
+    "lastDate": "2026-06-12",
+    "count": 11097
+  },
+  {
+    "symbol": "NTRS",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "NOC",
+    "firstDate": "1981-12-31",
+    "lastDate": "2026-06-12",
+    "count": 11202
+  },
+  {
+    "symbol": "NCLH",
+    "firstDate": "2013-01-18",
+    "lastDate": "2026-06-15",
+    "count": 3371
+  },
+  {
+    "symbol": "NRG",
+    "firstDate": "2003-12-02",
+    "lastDate": "2026-06-12",
+    "count": 5668
+  },
+  {
+    "symbol": "NUE",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "NVDA",
+    "firstDate": "1999-01-22",
+    "lastDate": "2026-06-12",
+    "count": 6890
+  },
+  {
+    "symbol": "NVR",
+    "firstDate": "1985-07-22",
+    "lastDate": "2026-06-12",
+    "count": 10303
+  },
+  {
+    "symbol": "NXPI",
+    "firstDate": "2010-08-06",
+    "lastDate": "2026-06-12",
+    "count": 3987
+  },
+  {
+    "symbol": "ORLY",
+    "firstDate": "1993-04-23",
+    "lastDate": "2026-06-12",
+    "count": 8342
+  },
+  {
+    "symbol": "OXY",
+    "firstDate": "1981-12-31",
+    "lastDate": "2026-06-12",
+    "count": 11202
+  },
+  {
+    "symbol": "ODFL",
+    "firstDate": "1991-10-24",
+    "lastDate": "2026-06-12",
+    "count": 8720
+  },
+  {
+    "symbol": "OMC",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "ON",
+    "firstDate": "2000-05-02",
+    "lastDate": "2026-06-12",
+    "count": 6568
+  },
+  {
+    "symbol": "OKE",
+    "firstDate": "1980-10-01",
+    "lastDate": "2026-06-12",
+    "count": 11517
+  },
+  {
+    "symbol": "ORCL",
+    "firstDate": "1986-03-12",
+    "lastDate": "2026-06-12",
+    "count": 10142
+  },
+  {
+    "symbol": "OTIS",
+    "firstDate": "2020-03-19",
+    "lastDate": "2026-06-15",
+    "count": 1568
+  },
+  {
+    "symbol": "PCAR",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "PKG",
+    "firstDate": "2000-01-28",
+    "lastDate": "2026-06-12",
+    "count": 6633
+  },
+  {
+    "symbol": "PLTR",
+    "firstDate": "2020-09-30",
+    "lastDate": "2026-06-15",
+    "count": 1433
+  },
+  {
+    "symbol": "PANW",
+    "firstDate": "2012-07-20",
+    "lastDate": "2026-06-15",
+    "count": 3495
+  },
+  {
+    "symbol": "PH",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "PAYX",
+    "firstDate": "1983-08-26",
+    "lastDate": "2026-06-12",
+    "count": 10783
+  },
+  {
+    "symbol": "PYPL",
+    "firstDate": "2015-07-06",
+    "lastDate": "2026-06-15",
+    "count": 2753
+  },
+  {
+    "symbol": "PNR",
+    "firstDate": "1973-05-03",
+    "lastDate": "2026-06-12",
+    "count": 13391
+  },
+  {
+    "symbol": "PEP",
+    "firstDate": "1972-06-01",
+    "lastDate": "2026-06-12",
+    "count": 13621
+  },
+  {
+    "symbol": "PFE",
+    "firstDate": "1972-06-01",
+    "lastDate": "2026-06-12",
+    "count": 13621
+  },
+  {
+    "symbol": "PCG",
+    "firstDate": "1972-06-01",
+    "lastDate": "2026-06-12",
+    "count": 13621
+  },
+  {
+    "symbol": "PM",
+    "firstDate": "2008-03-17",
+    "lastDate": "2026-06-12",
+    "count": 4590
+  },
+  {
+    "symbol": "PSX",
+    "firstDate": "2012-04-12",
+    "lastDate": "2026-06-15",
+    "count": 3564
+  },
+  {
+    "symbol": "PNW",
+    "firstDate": "1973-02-21",
+    "lastDate": "2026-06-12",
+    "count": 13441
+  },
+  {
+    "symbol": "PNC",
+    "firstDate": "1975-11-17",
+    "lastDate": "2026-06-12",
+    "count": 12748
+  },
+  {
+    "symbol": "POOL",
+    "firstDate": "1995-10-13",
+    "lastDate": "2026-06-15",
+    "count": 7717
+  },
+  {
+    "symbol": "PPG",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "PPL",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "PFG",
+    "firstDate": "2001-10-23",
+    "lastDate": "2026-06-12",
+    "count": 6199
+  },
+  {
+    "symbol": "PG",
+    "firstDate": "1970-01-02",
+    "lastDate": "2026-06-12",
+    "count": 14233
+  },
+  {
+    "symbol": "PGR",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "PLD",
+    "firstDate": "1997-11-21",
+    "lastDate": "2026-06-15",
+    "count": 7183
+  },
+  {
+    "symbol": "PRU",
+    "firstDate": "2001-12-13",
+    "lastDate": "2026-06-12",
+    "count": 6163
+  },
+  {
+    "symbol": "PEG",
+    "firstDate": "1980-01-02",
+    "lastDate": "2026-06-12",
+    "count": 11707
+  },
+  {
+    "symbol": "PTC",
+    "firstDate": "1989-12-08",
+    "lastDate": "2026-06-12",
+    "count": 9194
+  },
+  {
+    "symbol": "PSA",
+    "firstDate": "1980-11-18",
+    "lastDate": "2026-06-12",
+    "count": 11484
+  },
+  {
+    "symbol": "PHM",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "PWR",
+    "firstDate": "1998-02-12",
+    "lastDate": "2026-06-15",
+    "count": 7128
+  },
+  {
+    "symbol": "QCOM",
+    "firstDate": "1991-12-13",
+    "lastDate": "2026-06-12",
+    "count": 8685
+  },
+  {
+    "symbol": "DGX",
+    "firstDate": "1996-12-17",
+    "lastDate": "2026-06-15",
+    "count": 7419
+  },
+  {
+    "symbol": "RL",
+    "firstDate": "1997-06-12",
+    "lastDate": "2026-06-15",
+    "count": 7297
+  },
+  {
+    "symbol": "RJF",
+    "firstDate": "1983-07-01",
+    "lastDate": "2026-06-12",
+    "count": 10822
+  },
+  {
+    "symbol": "RTX",
+    "firstDate": "1970-01-02",
+    "lastDate": "2026-06-12",
+    "count": 14233
+  },
+  {
+    "symbol": "O",
+    "firstDate": "1994-10-18",
+    "lastDate": "2026-06-15",
+    "count": 7967
+  },
+  {
+    "symbol": "REG",
+    "firstDate": "1993-10-29",
+    "lastDate": "2026-06-15",
+    "count": 8211
+  },
+  {
+    "symbol": "REGN",
+    "firstDate": "1991-04-02",
+    "lastDate": "2026-06-12",
+    "count": 8864
+  },
+  {
+    "symbol": "RF",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "RSG",
+    "firstDate": "1998-07-01",
+    "lastDate": "2026-06-15",
+    "count": 7032
+  },
+  {
+    "symbol": "RMD",
+    "firstDate": "1995-06-02",
+    "lastDate": "2026-06-15",
+    "count": 7810
+  },
+  {
+    "symbol": "RVTY",
+    "firstDate": "1973-02-21",
+    "lastDate": "2026-06-12",
+    "count": 13441
+  },
+  {
+    "symbol": "HOOD",
+    "firstDate": "2021-07-29",
+    "lastDate": "2026-06-15",
+    "count": 1225
+  },
+  {
+    "symbol": "ROK",
+    "firstDate": "1981-12-31",
+    "lastDate": "2026-06-12",
+    "count": 11202
+  },
+  {
+    "symbol": "ROL",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "ROP",
+    "firstDate": "1992-02-13",
+    "lastDate": "2026-06-12",
+    "count": 8643
+  },
+  {
+    "symbol": "ROST",
+    "firstDate": "1985-08-08",
+    "lastDate": "2026-06-12",
+    "count": 10290
+  },
+  {
+    "symbol": "RCL",
+    "firstDate": "1993-04-28",
+    "lastDate": "2026-06-15",
+    "count": 8340
+  },
+  {
+    "symbol": "SPGI",
+    "firstDate": "1973-02-21",
+    "lastDate": "2026-06-12",
+    "count": 13441
+  },
+  {
+    "symbol": "CRM",
+    "firstDate": "2004-06-23",
+    "lastDate": "2026-06-12",
+    "count": 5529
+  },
+  {
+    "symbol": "SBAC",
+    "firstDate": "1999-06-16",
+    "lastDate": "2026-06-12",
+    "count": 6790
+  },
+  {
+    "symbol": "SLB",
+    "firstDate": "1981-12-31",
+    "lastDate": "2026-06-12",
+    "count": 11202
+  },
+  {
+    "symbol": "STX",
+    "firstDate": "2002-12-11",
+    "lastDate": "2026-06-12",
+    "count": 5913
+  },
+  {
+    "symbol": "SRE",
+    "firstDate": "1998-06-29",
+    "lastDate": "2026-06-15",
+    "count": 7034
+  },
+  {
+    "symbol": "NOW",
+    "firstDate": "2012-06-29",
+    "lastDate": "2026-06-15",
+    "count": 3509
+  },
+  {
+    "symbol": "SHW",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "SPG",
+    "firstDate": "1993-12-14",
+    "lastDate": "2026-06-15",
+    "count": 8180
+  },
+  {
+    "symbol": "SWKS",
+    "firstDate": "1984-09-07",
+    "lastDate": "2026-06-12",
+    "count": 10522
+  },
+  {
+    "symbol": "SJM",
+    "firstDate": "1994-10-31",
+    "lastDate": "2026-06-12",
+    "count": 7957
+  },
+  {
+    "symbol": "SNA",
+    "firstDate": "1973-02-21",
+    "lastDate": "2026-06-12",
+    "count": 13441
+  },
+  {
+    "symbol": "SOLV",
+    "firstDate": "2024-03-26",
+    "lastDate": "2026-06-12",
+    "count": 556
+  },
+  {
+    "symbol": "SO",
+    "firstDate": "1981-12-31",
+    "lastDate": "2026-06-12",
+    "count": 11202
+  },
+  {
+    "symbol": "LUV",
+    "firstDate": "1980-01-02",
+    "lastDate": "2026-06-12",
+    "count": 11707
+  },
+  {
+    "symbol": "SWK",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "SBUX",
+    "firstDate": "1992-06-26",
+    "lastDate": "2026-06-12",
+    "count": 8550
+  },
+  {
+    "symbol": "STT",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "STLD",
+    "firstDate": "1996-11-22",
+    "lastDate": "2026-06-12",
+    "count": 7434
+  },
+  {
+    "symbol": "STE",
+    "firstDate": "1992-06-01",
+    "lastDate": "2026-06-12",
+    "count": 8569
+  },
+  {
+    "symbol": "SYK",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "SMCI",
+    "firstDate": "2007-03-29",
+    "lastDate": "2026-06-12",
+    "count": 4833
+  },
+  {
+    "symbol": "SYF",
+    "firstDate": "2014-07-31",
+    "lastDate": "2026-06-15",
+    "count": 2986
+  },
+  {
+    "symbol": "SNPS",
+    "firstDate": "1992-02-26",
+    "lastDate": "2026-06-12",
+    "count": 8635
+  },
+  {
+    "symbol": "SYY",
+    "firstDate": "1973-05-08",
+    "lastDate": "2026-06-12",
+    "count": 13388
+  },
+  {
+    "symbol": "TMUS",
+    "firstDate": "2007-04-19",
+    "lastDate": "2026-06-12",
+    "count": 4819
+  },
+  {
+    "symbol": "TROW",
+    "firstDate": "1986-04-02",
+    "lastDate": "2026-06-12",
+    "count": 10128
+  },
+  {
+    "symbol": "TTWO",
+    "firstDate": "1997-04-15",
+    "lastDate": "2026-06-12",
+    "count": 7337
+  },
+  {
+    "symbol": "TPR",
+    "firstDate": "2000-10-06",
+    "lastDate": "2026-06-12",
+    "count": 6458
+  },
+  {
+    "symbol": "TRGP",
+    "firstDate": "2010-12-07",
+    "lastDate": "2026-06-12",
+    "count": 3902
+  },
+  {
+    "symbol": "TGT",
+    "firstDate": "1973-02-21",
+    "lastDate": "2026-06-12",
+    "count": 13441
+  },
+  {
+    "symbol": "TEL",
+    "firstDate": "2007-06-14",
+    "lastDate": "2026-06-12",
+    "count": 4780
+  },
+  {
+    "symbol": "TDY",
+    "firstDate": "1999-11-23",
+    "lastDate": "2026-06-12",
+    "count": 6678
+  },
+  {
+    "symbol": "TER",
+    "firstDate": "1973-02-21",
+    "lastDate": "2026-06-12",
+    "count": 13441
+  },
+  {
+    "symbol": "TSLA",
+    "firstDate": "2010-06-29",
+    "lastDate": "2026-06-12",
+    "count": 4014
+  },
+  {
+    "symbol": "TXN",
+    "firstDate": "1972-06-01",
+    "lastDate": "2026-06-12",
+    "count": 13621
+  },
+  {
+    "symbol": "TPL",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "TXT",
+    "firstDate": "1973-02-21",
+    "lastDate": "2026-06-12",
+    "count": 13441
+  },
+  {
+    "symbol": "TMO",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "TJX",
+    "firstDate": "1987-06-26",
+    "lastDate": "2026-06-12",
+    "count": 9815
+  },
+  {
+    "symbol": "TSCO",
+    "firstDate": "1994-02-17",
+    "lastDate": "2026-06-12",
+    "count": 8133
+  },
+  {
+    "symbol": "TT",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "TDG",
+    "firstDate": "2006-03-15",
+    "lastDate": "2026-06-12",
+    "count": 5094
+  },
+  {
+    "symbol": "TRV",
+    "firstDate": "1975-11-17",
+    "lastDate": "2026-06-12",
+    "count": 12748
+  },
+  {
+    "symbol": "TRMB",
+    "firstDate": "1990-07-20",
+    "lastDate": "2026-06-12",
+    "count": 9040
+  },
+  {
+    "symbol": "TFC",
+    "firstDate": "1980-03-18",
+    "lastDate": "2026-06-12",
+    "count": 11654
+  },
+  {
+    "symbol": "TYL",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "TSN",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "USB",
+    "firstDate": "1973-05-03",
+    "lastDate": "2026-06-12",
+    "count": 13391
+  },
+  {
+    "symbol": "UBER",
+    "firstDate": "2019-05-10",
+    "lastDate": "2026-06-15",
+    "count": 1784
+  },
+  {
+    "symbol": "UDR",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "ULTA",
+    "firstDate": "2007-10-25",
+    "lastDate": "2026-06-12",
+    "count": 4687
+  },
+  {
+    "symbol": "UNP",
+    "firstDate": "1980-01-02",
+    "lastDate": "2026-06-12",
+    "count": 11707
+  },
+  {
+    "symbol": "UAL",
+    "firstDate": "2006-02-06",
+    "lastDate": "2026-06-12",
+    "count": 5120
+  },
+  {
+    "symbol": "UPS",
+    "firstDate": "1999-11-10",
+    "lastDate": "2026-06-12",
+    "count": 6687
+  },
+  {
+    "symbol": "URI",
+    "firstDate": "1997-12-18",
+    "lastDate": "2026-06-15",
+    "count": 7165
+  },
+  {
+    "symbol": "UNH",
+    "firstDate": "1984-10-17",
+    "lastDate": "2026-06-12",
+    "count": 10494
+  },
+  {
+    "symbol": "UHS",
+    "firstDate": "1981-07-09",
+    "lastDate": "2026-06-12",
+    "count": 11324
+  },
+  {
+    "symbol": "VLO",
+    "firstDate": "1982-01-04",
+    "lastDate": "2026-06-12",
+    "count": 11201
+  },
+  {
+    "symbol": "VEEV",
+    "firstDate": "2013-10-16",
+    "lastDate": "2026-06-15",
+    "count": 3184
+  },
+  {
+    "symbol": "VTR",
+    "firstDate": "1997-05-05",
+    "lastDate": "2026-06-15",
+    "count": 7324
+  },
+  {
+    "symbol": "VLTO",
+    "firstDate": "2023-10-04",
+    "lastDate": "2026-06-12",
+    "count": 675
+  },
+  {
+    "symbol": "VRSN",
+    "firstDate": "1998-01-30",
+    "lastDate": "2026-06-12",
+    "count": 7136
+  },
+  {
+    "symbol": "VRSK",
+    "firstDate": "2009-10-07",
+    "lastDate": "2026-06-12",
+    "count": 4196
+  },
+  {
+    "symbol": "VZ",
+    "firstDate": "1983-11-21",
+    "lastDate": "2026-06-12",
+    "count": 10723
+  },
+  {
+    "symbol": "VRTX",
+    "firstDate": "1991-07-24",
+    "lastDate": "2026-06-12",
+    "count": 8785
+  },
+  {
+    "symbol": "VRT",
+    "firstDate": "2018-08-02",
+    "lastDate": "2026-06-15",
+    "count": 1977
+  },
+  {
+    "symbol": "VTRS",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "VICI",
+    "firstDate": "2018-01-02",
+    "lastDate": "2026-06-15",
+    "count": 2124
+  },
+  {
+    "symbol": "V",
+    "firstDate": "2008-03-19",
+    "lastDate": "2026-06-12",
+    "count": 4588
+  },
+  {
+    "symbol": "VST",
+    "firstDate": "2016-10-05",
+    "lastDate": "2026-06-15",
+    "count": 2436
+  },
+  {
+    "symbol": "VMC",
+    "firstDate": "1973-02-21",
+    "lastDate": "2026-06-12",
+    "count": 13441
+  },
+  {
+    "symbol": "WRB",
+    "firstDate": "1973-10-23",
+    "lastDate": "2026-06-12",
+    "count": 13271
+  },
+  {
+    "symbol": "GWW",
+    "firstDate": "1973-02-21",
+    "lastDate": "2026-06-12",
+    "count": 13441
+  },
+  {
+    "symbol": "WAB",
+    "firstDate": "1995-06-16",
+    "lastDate": "2026-06-15",
+    "count": 7800
+  },
+  {
+    "symbol": "WMT",
+    "firstDate": "1972-08-25",
+    "lastDate": "2026-06-12",
+    "count": 13561
+  },
+  {
+    "symbol": "DIS",
+    "firstDate": "1970-01-02",
+    "lastDate": "2026-06-12",
+    "count": 14233
+  },
+  {
+    "symbol": "WBD",
+    "firstDate": "2005-07-08",
+    "lastDate": "2026-06-12",
+    "count": 5266
+  },
+  {
+    "symbol": "WM",
+    "firstDate": "1988-06-22",
+    "lastDate": "2026-06-12",
+    "count": 9565
+  },
+  {
+    "symbol": "WAT",
+    "firstDate": "1995-11-17",
+    "lastDate": "2026-06-15",
+    "count": 7692
+  },
+  {
+    "symbol": "WEC",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "WFC",
+    "firstDate": "1972-06-01",
+    "lastDate": "2026-06-12",
+    "count": 13621
+  },
+  {
+    "symbol": "WELL",
+    "firstDate": "1980-03-19",
+    "lastDate": "2026-06-12",
+    "count": 11653
+  },
+  {
+    "symbol": "WST",
+    "firstDate": "1980-03-17",
+    "lastDate": "2026-06-12",
+    "count": 11655
+  },
+  {
+    "symbol": "WDC",
+    "firstDate": "1978-10-31",
+    "lastDate": "2026-06-12",
+    "count": 12002
+  },
+  {
+    "symbol": "WY",
+    "firstDate": "1973-05-03",
+    "lastDate": "2026-06-12",
+    "count": 13391
+  },
+  {
+    "symbol": "WSM",
+    "firstDate": "1983-07-07",
+    "lastDate": "2026-06-12",
+    "count": 10819
+  },
+  {
+    "symbol": "WMB",
+    "firstDate": "1981-12-31",
+    "lastDate": "2026-06-12",
+    "count": 11202
+  },
+  {
+    "symbol": "WTW",
+    "firstDate": "2001-06-12",
+    "lastDate": "2026-06-12",
+    "count": 6288
+  },
+  {
+    "symbol": "WDAY",
+    "firstDate": "2012-10-12",
+    "lastDate": "2026-06-15",
+    "count": 3436
+  },
+  {
+    "symbol": "WYNN",
+    "firstDate": "2002-10-25",
+    "lastDate": "2026-06-12",
+    "count": 5945
+  },
+  {
+    "symbol": "XEL",
+    "firstDate": "1973-02-21",
+    "lastDate": "2026-06-12",
+    "count": 13441
+  },
+  {
+    "symbol": "XYL",
+    "firstDate": "2011-10-13",
+    "lastDate": "2026-06-12",
+    "count": 3687
+  },
+  {
+    "symbol": "YUM",
+    "firstDate": "1997-09-17",
+    "lastDate": "2026-06-15",
+    "count": 7230
+  },
+  {
+    "symbol": "ZBRA",
+    "firstDate": "1991-08-15",
+    "lastDate": "2026-06-12",
+    "count": 8769
+  },
+  {
+    "symbol": "ZBH",
+    "firstDate": "2001-07-25",
+    "lastDate": "2026-06-12",
+    "count": 6258
+  },
+  {
+    "symbol": "ZTS",
+    "firstDate": "2013-02-01",
+    "lastDate": "2026-06-15",
+    "count": 3362
   }
 ]

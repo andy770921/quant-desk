@@ -1,51 +1,45 @@
 import { ASSET } from '../../market-data/assets';
-import { DAYS } from '../indicators';
 import { StrategyContext, StrategyDefinition, Weights } from '../strategy.types';
-import { bestBy, clamp, equityExposureWeights } from './_helpers';
+import { bestDefensive, trendUp } from './_helpers';
 
 /**
- * Strategy 4: Leverage for the Long Run (Gayed). Leverage stays behind a trend
- * + short-term confirmation, but is vol-throttled (target ~30% vol, 1x–3x) so
- * 3x only applies in calm uptrends.
+ * Strategy 4: Nasdaq Trend-Following + Treasury ballast, UNLEVERAGED. Classic
+ * time-series momentum: hold the Nasdaq-100 (1x) while it is above its 200-day
+ * moving average, rotate to the best-trending Treasury/gold/cash when it breaks
+ * below. Captures the Nasdaq's high long-run return while cutting its brutal
+ * bear-market drawdowns — no leverage involved.
  */
 export const leverageLongRun: StrategyDefinition = {
-  id: 'leverage-long-run',
-  name: '長線槓桿 (Gayed)',
-  shortName: '長線槓桿',
+  id: 'nasdaq-trend-bonds',
+  name: '那斯達克趨勢避險',
+  shortName: '那斯達克趨勢',
   category: 'trend-following',
   description:
-    '只在趨勢向上且短線翻多時動用槓桿，並以波動度目標 (30%) 調整槓桿倍數，平靜期才放大到 3 倍。',
+    '那斯達克 100 站上 200 日均線時持有那斯達克（1 倍，不加槓桿）；跌破均線就全數轉入趨勢最強的公債/黃金/現金。用趨勢濾網把那斯達克的高報酬留下、把大空頭的深回撤砍掉。',
   longDescription:
-    'Michael Gayed 的「Leverage for the Long Run」，波動節流版本。除了 200 日均線濾網外，再加上短期動能確認（過去一個月為正），' +
-    '並用波動度目標（30%）把曝險限制在 1～3 倍之間——只有在波動低的多頭才放大到 3 倍，波動升高時自動降槓桿，' +
-    '大幅降低高波動下跌期的災難式回撤，在保留多數上漲的同時顯著提升 Sharpe；跌破均線或短線翻空時退到趨勢最強的公債。',
+    '時間序列動能 (time-series momentum) 的經典應用，標的選波動與長期報酬都最高的那斯達克 100。' +
+    '當未槓桿那斯達克收盤價站上 200 日移動平均線（多頭趨勢），就 100% 持有那斯達克指數本身（1 倍，不使用槓桿）；' +
+    '一旦跌破 200 日均線，立即全數轉入中期公債、長期公債、黃金、現金中近半年趨勢最強的避險資產，避開 2000、2008、2022 的主跌段。' +
+    '長期報酬遠勝標普 500（那斯達克本身就強），但因為會在空頭離場，最大回撤明顯低於買進持有那斯達克。完全不使用槓桿。',
   rules: [
-    '每日檢查 200 日均線與過去 1 個月報酬。',
-    '兩者皆為多頭：曝險 = clamp(30% ÷ 20 日波動度, 1.0, 3.0)，以 1x/SSO(2x)/UPRO(3x) 混合達成，不融資。',
-    '否則：轉入中期/長期公債中 13612W 動能較強者 100%。',
-    '每月最多交易 3 次。',
+    '每日檢查那斯達克 100 是否站上 200 日均線。',
+    '站上：100% 持有那斯達克 100 指數（1 倍，不加槓桿）。',
+    '跌破：全數轉入中期/長期公債、黃金、現金中近半年趨勢最強者。',
+    '每月最多交易 3 次；全程不使用槓桿。',
   ],
-  caveats: ['仍有開盤跳空風險，但波動節流可降低高波動期的回撤。', '對借貸成本與波動估計敏感。'],
-  tags: ['槓桿', '趨勢', '標普500'],
+  caveats: [
+    '200 日均線在盤整時會來回穿越，造成數次假訊號 (whipsaw)。',
+    '單壓那斯達克，集中度高、波動大於分散型策略。',
+    '突發跳空大跌（如 2020 年 3 月）當日無法靠日線濾網即時避開。',
+  ],
+  tags: ['趨勢', '那斯達克', '時間序列動能', '不使用槓桿'],
   rebalance: 'daily',
-  universe: ['美國大型股', '2x 標普500 (SSO)', '3x 標普500 (UPRO)', '中/長期公債'],
-  assets: [ASSET.USLC, ASSET.USLC2X, ASSET.USLC3X, ASSET.ITT, ASSET.LTT],
-  coreAssets: [ASSET.USLC, ASSET.ITT, ASSET.LTT],
-  warmupDays: 260,
+  universe: ['那斯達克100', '中/長期公債', '黃金', '現金'],
+  assets: [ASSET.NASDAQ, ASSET.ITT, ASSET.LTT, ASSET.GOLD, ASSET.CASH],
+  coreAssets: [ASSET.NASDAQ],
+  warmupDays: 210,
   cadence: 'daily',
   decide(ctx: StrategyContext): Weights {
-    const price = ctx.level(ASSET.USLC);
-    const ma = ctx.sma(ASSET.USLC, 200);
-    const mom = ctx.ret(ASSET.USLC, DAYS.MONTH);
-    if (price === undefined || ma === undefined || mom === undefined) {
-      return { [ASSET.ITT]: 1 };
-    }
-    if (price > ma && mom > 0) {
-      const rv = ctx.vol(ASSET.USLC, 20);
-      const e = rv && rv > 0 ? clamp(0.3 / rv, 1, 3) : 1;
-      return equityExposureWeights(e, ASSET.USLC, ASSET.USLC2X, ASSET.USLC3X);
-    }
-    const safe = bestBy([ASSET.LTT, ASSET.ITT], (a) => ctx.score13612W(a), ASSET.ITT);
-    return { [safe]: 1 };
+    return trendUp(ctx, ASSET.NASDAQ, 200) ? { [ASSET.NASDAQ]: 1 } : { [bestDefensive(ctx)]: 1 };
   },
 };

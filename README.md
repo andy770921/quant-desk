@@ -15,13 +15,19 @@ and evaluates every strategy's signal live to drive real-time buy/sell alerts.
 
 ## Features
 
-- **10 strategies** — a flagship 3x Nasdaq trend strategy (gated by the QQQ 20-day MA) plus 9 systematic approaches spanning momentum, trend-following, volatility targeting, and risk parity. One editable file per strategy.
+- **10 strategies, market-beating & honest** — `01` is the mandated leveraged flagship (3x Nasdaq, gated by the QQQ 20-day MA). `02–10` are **unleveraged, skill-based** strategies: `02–05` are survivorship-bias-free **index asset-allocation** (dual momentum / GEM, defensive-canary DAA, Nasdaq trend + bonds, dual-momentum bond-blend) and `06–10` are **individual-stock factor** strategies over the S&P 500 (cross-sectional momentum, multifactor momentum×low-vol, momentum + bond ballast, momentum-leader pullback, broad momentum). One editable file per strategy.
+- **The headline promise is a test** — every strategy `02–10` beats dollar-cost-averaging into **QQQ or VOO by ≥20%** over its full history, with a Sharpe ≥ the QQQ benchmark **and a lower max drawdown than buy-and-hold Nasdaq** — all with **no leverage / no borrowing** (the same playing field as the DCA benchmark). This, plus the no-leverage and drawdown bounds, is locked by `backtest/strategy-eval.spec.ts` (the `strategy-eval.ts` harness scores every strategy vs the QQQ/VOO DCA benchmarks and reports Calmar = return ÷ maxDD).
 - **Two backtest baselines** — DCA ($2,000/mo) and lump sum ($100,000), each vs. monthly/one-time QQQ & VOO.
-- **Share-based, no-borrow engine** — tracks real shares + cash; leverage only via leveraged ETFs (TQQQ/UPRO/SSO), never margin. Produces a concrete dollar/share trade ledger.
+- **Share-based, no-borrow engine** — tracks real shares + cash; weights always sum to ≤ 1. The only way to >1x exposure is holding a leveraged ETF (used solely by the flagship `01`); strategies `02–10` stay at ≤ 1x. Produces a concrete dollar/share trade ledger.
 - **Dynamic grading** — risk level, leverage, and metric ratings (Sharpe / drawdown / volatility / return) are derived from backtests, not hardcoded; thresholds live in one shared module.
 - **Live signals** — each strategy's current target allocation is computed from the latest data; an opt-in scheduler detects changes and dispatches alerts (email/LINE scaffold).
-- **Free data** — Yahoo Finance (no key); daily OHLCV for 32 indices/ETFs/yields back to ~1990, plus an individual-stock fetcher.
+- **Free data** — Yahoo Finance (no key); daily OHLCV for 32 indices/ETFs/yields back to ~1990, **plus the ~500 current S&P 500 constituents** loaded into the engine as `STK_*` assets and used by the stock-selection strategies (`ctx.stocks()`).
 - **Stack** — Next.js 15 (App Router) + TanStack Query + recharts; NestJS 11; `@repo/shared` types; Turborepo.
+
+> **Survivorship-bias note:** the stock universe is *today's* S&P 500 membership, so backtests of the
+> stock-selection strategies (`06–10`) are **optimistic** — they exclude companies that were dropped or
+> went bankrupt. The bias-free claim rests on the index strategies (`02–05`). See
+> [`documents/FEAT-1/development/DATA.md`](documents/FEAT-1/development/DATA.md).
 
 ## Quick Start
 

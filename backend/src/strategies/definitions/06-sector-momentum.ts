@@ -1,54 +1,47 @@
-import { ASSET, SECTOR_ASSETS } from '../../market-data/assets';
+import { ASSET } from '../../market-data/assets';
+import { DAYS } from '../indicators';
 import { StrategyContext, StrategyDefinition, Weights } from '../strategy.types';
-import { bestBy, rankBy } from './_helpers';
+import { bestDefensive, equalWeight, topStocksByMomentum, trendUp } from './_helpers';
 
 /**
- * Strategy 6: sector relative-strength rotation with a market-wide 200-SMA
- * crash filter, multi-timeframe (13612W) ranking, concentrated in the top-2
- * with a Treasury safety sleeve.
+ * Strategy 6: Stock Cross-Sectional Momentum (top 50), UNLEVERAGED. Each month,
+ * equal-weight the 50 S&P-500 names with the highest 12-1 momentum, but only
+ * while the broad market is above its 200-day trend; otherwise step aside into
+ * bonds. A broad (50-name) book keeps it diversified and curbs single-stock risk.
  */
 export const sectorMomentum: StrategyDefinition = {
-  id: 'sector-momentum',
-  name: '產業動能輪動',
-  shortName: '產業輪動',
+  id: 'stock-momentum-50',
+  name: '個股動能 50',
+  shortName: '個股動能50',
   category: 'momentum',
   description:
-    '加上大盤 200 日均線崩盤濾網，以 13612W 複合動能選前 2 強產業，並保留 20% 公債安全墊。',
+    '大盤站上 200 日均線時，等權持有 S&P 500 中 12-1 動能最強的 50 檔個股；大盤跌破 200 日均線就全數轉入趨勢最強的公債/黃金/現金。橫斷面動能因子，不使用槓桿。',
   longDescription:
-    '跨產業的相對強度輪動。先用標普 500 的 200 日均線作為大盤崩盤濾網——大盤跌破均線時全數轉入趨勢最強的公債；' +
-    '大盤多頭時，改用 13612W 複合動能替 9 大 SPDR 產業排名，集中持有最強的前兩名（各 40%），其餘 20% 配置在趨勢向上的中期公債或現金作為安全墊，' +
-    '同時降低回撤並提升 Sharpe。',
+    '經典的橫斷面動能 (cross-sectional momentum)：動能因子是學術與實務上最穩健的超額報酬來源之一 (Jegadeesh-Titman)。' +
+    '每月底計算約 500 檔 S&P 500 成分股的 12-1 動能（跳過最近一個月的 12 個月報酬），等權買進最強的 50 檔；' +
+    '並用大盤（標普 500）的 200 日均線當作「絕對動能」總開關：大盤跌破 200 日均線時全數離場，轉入中期/長期公債、黃金、現金中趨勢最強者，' +
+    '藉此避開 2008、2022 這類動能崩潰 (momentum crash) 的時期。持有 50 檔分散個股風險，全程不使用槓桿。',
   rules: [
-    '大盤濾網：標普 500 跌破 200 日均線 → 100% 趨勢最強公債（中/長期）。',
-    '大盤多頭：以 13612W 複合動能替 9 大產業排名，取前 2 名各 40%（動能為負則該部位轉現金）。',
-    '其餘 20% 配置於中期公債（若其動能 > 0）否則現金。',
-    '每月再平衡一次。',
+    '每月底計算股票池中每檔的 12-1 動能（1 個月前 ÷ 12 個月前 − 1）。',
+    '大盤站上 200 日均線：等權買進動能最強的 50 檔個股。',
+    '大盤跌破 200 日均線：全數轉入公債/黃金/現金中近半年趨勢最強者。',
+    '每月再平衡一次，全程不使用槓桿。',
   ],
-  caveats: ['產業 ETF 資料自 1998 年底起。', '集中前 2 名，單一產業反轉的衝擊較大。'],
-  tags: ['動能', '產業輪動', '相對強度'],
+  caveats: [
+    '股票池為「目前」的 S&P 500 成分股，存在存活者偏誤 (survivorship bias)，歷史績效會被高估，僅供示意。',
+    '僅有價量資料，無基本面，無法做品質/估值篩選。',
+    '動能在市場反轉時會集體崩跌；200 日均線總開關可降低但無法消除此風險。',
+  ],
+  tags: ['動能', '選股', '橫斷面', '不使用槓桿'],
   rebalance: 'monthly',
-  universe: ['9 大產業類股', '中/長期公債', '現金'],
-  assets: [...SECTOR_ASSETS, ASSET.USLC, ASSET.ITT, ASSET.LTT, ASSET.CASH],
-  coreAssets: SECTOR_ASSETS,
-  warmupDays: 260,
+  universe: ['S&P 500 個股（約 500 檔）', '中/長期公債', '黃金', '現金'],
+  assets: [ASSET.NASDAQ, ASSET.ITT, ASSET.LTT, ASSET.GOLD, ASSET.CASH],
+  coreAssets: [ASSET.USLC],
+  warmupDays: DAYS.YEAR + 10,
   cadence: 'monthly',
   decide(ctx: StrategyContext): Weights {
-    const price = ctx.level(ASSET.USLC);
-    const ma = ctx.sma(ASSET.USLC, 200);
-    if (price !== undefined && ma !== undefined && price <= ma) {
-      const safe = bestBy([ASSET.LTT, ASSET.ITT], (a) => ctx.score13612W(a), ASSET.ITT);
-      return { [safe]: 1 };
-    }
-    const ranked = rankBy([...SECTOR_ASSETS], (a) => ctx.score13612W(a));
-    const top = ranked.slice(0, 2);
-    const weights: Weights = {};
-    for (const { asset, score } of top) {
-      if (score > 0) weights[asset] = 0.4;
-    }
-    const ittScore = ctx.score13612W(ASSET.ITT);
-    const sleeve = ittScore !== undefined && ittScore > 0 ? ASSET.ITT : ASSET.CASH;
-    if (sleeve === ASSET.ITT) weights[sleeve] = (weights[sleeve] ?? 0) + 0.2;
-    // CASH sleeve is left unallocated (engine treats remainder as cash).
-    return weights;
+    if (!trendUp(ctx, ASSET.USLC, 200)) return { [bestDefensive(ctx)]: 1 };
+    const top = topStocksByMomentum(ctx, 50);
+    return top.length < 10 ? { [ASSET.NASDAQ]: 1 } : equalWeight(top);
   },
 };

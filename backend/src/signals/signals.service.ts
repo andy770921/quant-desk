@@ -78,7 +78,9 @@ export class SignalsService {
   // ----------------------------------------------------------------- helpers
 
   private gross(w: Weights): number {
-    return Object.values(w).reduce((s: number, x) => s + (x ?? 0), 0);
+    let s = 0;
+    for (const x of Object.values(w)) s += x ?? 0;
+    return s;
   }
 
   private toAllocations(weights: Weights): SignalAllocation[] {

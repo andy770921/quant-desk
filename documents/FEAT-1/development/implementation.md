@@ -14,11 +14,12 @@ no-borrow engine, dynamic grading, live signals, and a refreshable OHLCV data la
 - `strategies/` — `indicators.ts` (SMA, return, RSI, vol, 13612W, accel); `definitions/` with **one
   file per strategy** (`01-*.ts`…`10-*.ts`, shared math in `_helpers.ts`) aggregated by `index.ts`;
   `strategies.service.ts` (registry; **derives** `riskLevel` + `leverage` from a canonical backtest).
-  10 strategies ship: `01` is the flagship (3x Nasdaq gated by the **QQQ / Nasdaq-100** 20-day MA —
-  the signal is the *unleveraged* index, not TQQQ); `02`–`10` are research-driven rules-based
-  approaches (composite 13612W momentum, vol targeting, inverse-vol risk parity, etc.). Each
-  definition carries a `signalFormula` string that is **the math rendered on the UI** and must stay
-  in lockstep with its `decide()` — treat them as one unit when editing.
+  10 strategies ship: `01` is the mandated leveraged flagship (3x Nasdaq gated by the **QQQ /
+  Nasdaq-100** 20-day MA — the signal is the *unleveraged* index, not TQQQ); `02`–`10` are
+  **unleveraged** skill-based strategies (see the changelog below for the current lineup). The UI's
+  buy/sell "formula" is generated from the real `decide()` source by `scripts/generate-signal-source.mjs`
+  into `definitions/signal-source.generated.ts` (guarded by `signal-source.spec.ts`), so the displayed
+  math can never drift from the code.
 - `backtest/` — `engine.ts` (pure, share-based, no-borrow simulation + trade ledger); `metrics.ts`
   (XIRR via bisection, CAGR, max drawdown, Sharpe, annualized vol); `backtest.service.ts` orchestrates
   strategy + QQQ/VOO benchmarks. `GET /api/backtest`.
@@ -95,9 +96,55 @@ Post-initial-build refinements (the registry previously shipped 19 strategies: 1
   signals run. (The frontend `provider.utils.spec.ts` failure is a pre-existing Jest-runtime version
   issue, unrelated to these changes.)
 
+## Changelog — unleveraged rewrite, S&P 500 stock universe, drawdown-aware
+
+The brief: strategies `02–10` must beat dollar-cost-averaging into QQQ or VOO **on a level playing
+field** — i.e. **no borrowing** (the benchmark doesn't borrow, and leveraged ETFs embed borrowing),
+**low drawdown as a tracked metric**, and **less survivorship bias** in any stock selection. The
+result is a clean rewrite of `02–10` from leveraged asset-allocation to unleveraged, skill-based
+strategies.
+
+- **Eval harness (new).** `backtest/strategy-eval.ts` + `strategy-eval.spec.ts` score every strategy
+  against the QQQ/VOO **DCA** benchmarks over its full history and report annualized return, Sharpe,
+  **max drawdown, and Calmar (return ÷ maxDD)**. The spec is the locked contract: each `02–10` must
+  (1) beat QQQ **or** VOO final value by **≥20%**, (2) have Sharpe ≥ QQQ − 0.1, (3) be **unleveraged**
+  (`peakLeverage === 1`), and (4) draw down **less than buy-and-hold Nasdaq**. The flagship `01` is
+  exempt from (3)/(4).
+- **Strategies `02–10` rewritten, all unleveraged (gross ≤ 1, peak exposure ≤ 1x):**
+  - `02–05` — **survivorship-bias-free index asset-allocation**: `02` dual momentum / GEM
+    (relative + absolute momentum across Nasdaq/S&P/small/intl, bonds when risk-off), `03` defensive
+    asset allocation (Keller-style dual "canary"), `04` Nasdaq time-series-momentum + Treasury ballast,
+    `05` dual momentum with a 50/50 bond-blend brake.
+  - `06–10` — **individual-stock factor strategies** over the S&P 500: `06` cross-sectional 12-1
+    momentum (top 50), `07` multifactor momentum × low-volatility (top-40 → lowest-vol 15), `08`
+    momentum + 35% bond ballast (lowest drawdown), `09` momentum-leader pullback (short-term reversal
+    among long-term winners), `10` broad momentum (top 75). All trend-gated to bonds when the market is
+    below its 200-day average.
+  - Full-history DCA result: **all 10 beat QQQ or VOO by ≥20%**, all unleveraged, all with lower
+    drawdown than buy-and-hold Nasdaq; Sharpe 0.52–0.89 (vs QQQ ≈ 0.55); the bias-free `02–05` beat
+    VOO by 25–50% (DAA's drawdown only ~31%).
+- **Individual stocks wired into the engine.** `AssetKey` was widened to allow `STK_<SYM>` keys;
+  `MarketDataService.loadStocks()` reads `data/stocks/`, builds a per-stock total-return level
+  (adjusted close) aligned to the calendar, and registers each as an asset. `StrategyContext` gained
+  `stocks()` (the `STK_*` keys with data on the signal day), and `_helpers.ts` gained
+  `momentum12_1`, `topStocksByMomentum`, `equalWeight`, `bestDefensive`.
+- **Universe expanded 67 → ~500.** `fetch-stocks.mjs` was run for the full current **S&P 500
+  constituents** (vs the earlier hand-picked mega-caps), giving real cross-sectional breadth and far
+  less cherry-picking. Survivorship bias is *reduced, not eliminated* (today's membership) — flagged
+  in each stock strategy's `caveats` and in DATA.md.
+- **Engine no-borrow rule documented.** `decide()` weights must sum to ≤ 1; returning a gross weight
+  > 1 does **not** create real leverage — the engine floors cash at 0 and silently inflates value
+  (a bug). >1x exposure is only legitimate via the leveraged-ETF assets, used solely by `01`.
+- **Removed** the interim leveraged lineup (incl. a transient `11-leveraged-stock-momentum.ts` and the
+  reliance on synthetic `*2X/*3X` ETFs in `02–10`).
+- **Validation.** `npm run test` (backend), `npm run lint`, `npm run build`, and the
+  `signal-source --check` guard all pass.
+
 ## Follow-ups
 
 - Wire real Email (SES/Resend) + LINE Messaging API in `NotificationsService`; add auth; persist
   signal state + subscriptions.
-- Wire the individual-stock universe into the engine; add **fundamentals** (SEC EDGAR / paid).
-- Add transaction costs/slippage; move data to a DB with scheduled refresh.
+- **Reduce stock survivorship bias properly**: add point-in-time S&P 500 membership so stock
+  strategies only pick from names listed *on each date*; add **fundamentals** (SEC EDGAR / paid) for
+  quality/value factors.
+- Add transaction costs/slippage (momentum has real turnover); move data to a DB with scheduled refresh.

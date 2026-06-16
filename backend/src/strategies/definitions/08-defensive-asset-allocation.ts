@@ -1,72 +1,48 @@
-import { ASSET, AssetKey } from '../../market-data/assets';
+import { ASSET } from '../../market-data/assets';
 import { DAYS } from '../indicators';
 import { StrategyContext, StrategyDefinition, Weights } from '../strategy.types';
-import { bestBy, inverseVolWeights } from './_helpers';
+import { bestDefensive, equalWeight, topStocksByMomentum, trendUp } from './_helpers';
 
 /**
- * Strategy 8: Defensive Asset Allocation (Keller & Keuning). Same canary/breadth
- * defense, but the offensive sleeve is sized by inverse volatility instead of
- * equal weight so high-vol assets don't dominate the risk budget — smoother
- * curve, higher Sharpe.
+ * Strategy 8: Stock Momentum + Bond Ballast, UNLEVERAGED. A 65/35 split between
+ * the top-40 momentum stocks and intermediate Treasuries (trend-gated to bonds
+ * when the market is weak). The permanent bond sleeve is the lowest-drawdown
+ * stock strategy on the platform — a balanced "growth + ballast" book.
  */
 export const defensiveAssetAllocation: StrategyDefinition = {
-  id: 'defensive-asset-allocation',
-  name: '防禦資產配置 DAA',
-  shortName: '防禦配置 DAA',
+  id: 'stock-momentum-bond-ballast',
+  name: '個股動能+債券壓艙',
+  shortName: '動能+債券',
   category: 'diversified',
-  description: '用「金絲雀」資產偵測風險切換攻守，攻擊端以反波動度權重配置，避免高波動資產主導風險。',
+  description:
+    '大盤多頭時，65% 等權持有動能最強的 40 檔個股，固定 35% 配置中期公債當壓艙石；大盤跌破 200 日均線則全數轉入公債/黃金/現金。本平台回撤最低的選股策略。',
   longDescription:
-    'Keller & Keuning 的 Defensive Asset Allocation。用反應快速的「金絲雀」資產（國際股與中期公債）做為市場廣度的預警：' +
-    '兩個金絲雀動能皆為正時全力進攻，只要其中一個轉負就降風險，兩個都轉負則全數防禦。攻擊端不採等權，而是以反波動度權重配置——' +
-    '波動高的資產（如那斯達克、黃金）權重較低，使各資產對組合風險的貢獻更平衡，讓資金曲線更平滑、Sharpe 更高，回撤維持相近水準。',
+    '把橫斷面動能選股與固定債券壓艙石結合，做成一個攻守均衡、低回撤的「成長+壓艙」組合。' +
+    '當大盤站上 200 日均線：以 65% 等權買進 12-1 動能最強的 40 檔個股，另 35% 固定配置中期公債——' +
+    '債券部位在股市回檔時提供緩衝，把最大回撤壓到約 23%（純動能約 35%、大盤逾 50%）。' +
+    '當大盤跌破 200 日均線：全數轉入中期/長期公債、黃金、現金中趨勢最強者。' +
+    '適合想參與個股動能、但更在意波動與回撤的投資人。全程不使用槓桿。',
   rules: [
-    '每月底以 13612W 動能 = 12×1月 + 4×3月 + 2×6月 + 1×12月 報酬計分，金絲雀為國際股與中期公債。',
-    '兩金絲雀皆 > 0 → 攻擊池前 6 名，依反波動度權重配置。',
-    '一個 > 0 → 50% 攻擊前 3 名（反波動度權重）+ 50% 最佳防禦資產。',
-    '皆 ≤ 0 → 100% 最佳防禦資產（現金/中/長期公債）。',
+    '大盤站上 200 日均線：65% 等權持有動能最強的 40 檔 + 35% 中期公債。',
+    '大盤跌破 200 日均線：全數轉入公債/黃金/現金中近半年趨勢最強者。',
+    '每月再平衡一次，全程不使用槓桿。',
   ],
-  caveats: ['反波動度權重對波動估計敏感。', '部分標的歷史較短，早期以可得資產運作。'],
-  tags: ['資產配置', '風險平衡', '危機防護'],
+  caveats: [
+    '股票池為目前 S&P 500 成分股，存在存活者偏誤，歷史績效偏樂觀。',
+    '固定 35% 債券在強多頭中會略微拖累報酬（換取較低回撤）。',
+    '股債同跌的環境（如 2022）壓艙效果會打折。',
+  ],
+  tags: ['動能', '選股', '債券壓艙', '低回撤', '不使用槓桿'],
   rebalance: 'monthly',
-  universe: ['多資產攻擊池（反波動度）', '公債防禦池'],
-  assets: [
-    ASSET.USLC,
-    ASSET.NASDAQ,
-    ASSET.SMALL,
-    ASSET.INTL,
-    ASSET.GOLD,
-    ASSET.LTT,
-    ASSET.ITT,
-    ASSET.CASH,
-  ],
-  coreAssets: [ASSET.USLC, ASSET.ITT, ASSET.LTT],
-  warmupDays: DAYS.YEAR + 5,
+  universe: ['S&P 500 個股（約 500 檔）', '中期公債', '長期公債', '黃金', '現金'],
+  assets: [ASSET.NASDAQ, ASSET.ITT, ASSET.LTT, ASSET.GOLD, ASSET.CASH],
+  coreAssets: [ASSET.USLC],
+  warmupDays: DAYS.YEAR + 10,
   cadence: 'monthly',
   decide(ctx: StrategyContext): Weights {
-    const offensive: AssetKey[] = [
-      ASSET.USLC,
-      ASSET.NASDAQ,
-      ASSET.SMALL,
-      ASSET.INTL,
-      ASSET.GOLD,
-      ASSET.LTT,
-    ];
-    const defensive: AssetKey[] = [ASSET.CASH, ASSET.ITT, ASSET.LTT];
-    const canaryEquity = ctx.has(ASSET.INTL) ? ASSET.INTL : ASSET.USLC;
-    const cEq = ctx.score13612W(canaryEquity) ?? 0;
-    const cBond = ctx.score13612W(ASSET.ITT) ?? 0;
-    const goodCanaries = (cEq > 0 ? 1 : 0) + (cBond > 0 ? 1 : 0);
-    const bestDef = bestBy(defensive, (a) => ctx.score13612W(a), ASSET.CASH);
-
-    if (goodCanaries === 2) {
-      const w = inverseVolWeights(ctx, offensive, 6, 20, 1);
-      return Object.keys(w).length ? w : { [bestDef]: 1 };
-    }
-    if (goodCanaries === 1) {
-      const w = inverseVolWeights(ctx, offensive, 3, 20, 0.5);
-      w[bestDef] = (w[bestDef] ?? 0) + 0.5;
-      return w;
-    }
-    return { [bestDef]: 1 };
+    if (!trendUp(ctx, ASSET.USLC, 200)) return { [bestDefensive(ctx)]: 1 };
+    const top = topStocksByMomentum(ctx, 40);
+    if (top.length < 10) return { [ASSET.NASDAQ]: 0.65, [ASSET.ITT]: 0.35 };
+    return { ...equalWeight(top, 0.65), [ASSET.ITT]: 0.35 };
   },
 };

@@ -2,7 +2,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import type { MarketIndexQuote, MarketOverview, PriceSeries } from '@repo/shared';
-import { ASSET, AssetKey, BOND_DURATION, LEVERAGED_ETFS } from './assets';
+import { ASSET, AssetKey, BOND_DURATION, LEVERAGED_ETFS, stockKey } from './assets';
 import { fetchYahooSeries, RawPoint } from './yahoo.client';
 
 interface RawSeries {
@@ -37,14 +37,19 @@ export class MarketDataService implements OnModuleInit {
   private calendarIndex = new Map<string, number>();
   /** Logical asset → daily level aligned to the calendar (undefined pre-inception). */
   private levels = new Map<AssetKey, Aligned>();
+  /** Individual-stock ticker → raw daily points (sorted), loaded from data/stocks/. */
+  private rawStocks = new Map<string, RawPoint[]>();
+  /** Stock asset keys (e.g. STK_AAPL) with data loaded, exposed to strategies. */
+  private stockKeys: AssetKey[] = [];
   /** ISO timestamp of the last successful live refresh (empty until first refresh). */
   private lastRefreshed = '';
 
   onModuleInit() {
     this.loadRaw();
+    this.loadStocks();
     this.rebuild();
     this.logger.log(
-      `Loaded ${this.raw.size} raw series, calendar ${this.calendar[0]}…${this.calendar.at(-1)} (${this.calendar.length} days), ${this.levels.size} logical assets`,
+      `Loaded ${this.raw.size} raw series, calendar ${this.calendar[0]}…${this.calendar.at(-1)} (${this.calendar.length} days), ${this.levels.size} logical assets, ${this.stockKeys.length} stocks`,
     );
   }
 
@@ -53,6 +58,7 @@ export class MarketDataService implements OnModuleInit {
     this.buildCalendar();
     this.inceptionLevelCache.clear();
     this.buildAssets();
+    this.buildStocks();
   }
 
   /**
@@ -135,6 +141,32 @@ export class MarketDataService implements OnModuleInit {
       const file = resolve(dir, `${key}.json`);
       if (!existsSync(file)) continue;
       this.raw.set(key, JSON.parse(readFileSync(file, 'utf8')) as RawSeries);
+    }
+  }
+
+  /**
+   * Load individual-stock daily history from `data/stocks/` (year-partitioned).
+   * Optional — if the folder is absent the platform runs on logical assets only.
+   * Each loaded stock becomes an asset keyed `STK_<SYMBOL>` usable by strategies.
+   */
+  private loadStocks() {
+    const dir = resolve(this.resolveDataDir(), 'stocks');
+    const manifestPath = resolve(dir, 'manifest.json');
+    if (!existsSync(manifestPath)) return;
+    const manifest = JSON.parse(readFileSync(manifestPath, 'utf8')) as { symbol: string }[];
+    for (const { symbol } of manifest) {
+      const metaPath = resolve(dir, symbol, 'meta.json');
+      if (!existsSync(metaPath)) continue;
+      const meta = JSON.parse(readFileSync(metaPath, 'utf8')) as { years: string[] };
+      const points: RawPoint[] = [];
+      for (const year of meta.years) {
+        const yf = resolve(dir, symbol, `${year}.json`);
+        if (existsSync(yf)) points.push(...(JSON.parse(readFileSync(yf, 'utf8')) as RawPoint[]));
+      }
+      if (points.length === 0) continue;
+      points.sort((a, b) => (a.d < b.d ? -1 : 1));
+      this.rawStocks.set(symbol, points);
+      this.stockKeys.push(stockKey(symbol));
     }
   }
 
@@ -300,6 +332,29 @@ export class MarketDataService implements OnModuleInit {
     }
   }
 
+  /** Forward-fill a raw point array's `field` onto the trading calendar. */
+  private alignPoints(points: RawPoint[], field: 'c' | 'a'): Aligned {
+    const out: Aligned = new Array(this.calendar.length).fill(undefined);
+    let j = 0;
+    let last: number | undefined;
+    for (let i = 0; i < this.calendar.length; i++) {
+      const day = this.calendar[i];
+      while (j < points.length && points[j].d <= day) {
+        last = points[j][field];
+        j++;
+      }
+      out[i] = last;
+    }
+    return out;
+  }
+
+  /** Build a total-return level (adjusted close) per loaded stock, aligned to the calendar. */
+  private buildStocks() {
+    for (const [symbol, points] of this.rawStocks) {
+      this.levels.set(stockKey(symbol), this.alignPoints(points, 'a'));
+    }
+  }
+
   // -------------------------------------------------------- engine accessors
 
   getCalendar(): string[] {
@@ -310,6 +365,11 @@ export class MarketDataService implements OnModuleInit {
     const lv = this.levels.get(asset);
     if (!lv) throw new Error(`Unknown asset ${asset}`);
     return lv;
+  }
+
+  /** All loaded individual-stock asset keys (e.g. STK_AAPL). */
+  getStockKeys(): AssetKey[] {
+    return this.stockKeys;
   }
 
   private inceptionLevelCache = new Map<AssetKey, number>();

@@ -26,6 +26,8 @@ export interface StrategyContext {
   accel(asset: AssetKey): number | undefined;
   /** Whether the asset has a value on the signal day. */
   has(asset: AssetKey): boolean;
+  /** Individual-stock asset keys (STK_*) that have data on the signal day. */
+  stocks(): AssetKey[];
 }
 
 export interface StrategyDefinition {

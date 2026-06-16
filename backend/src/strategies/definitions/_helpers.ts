@@ -1,4 +1,4 @@
-import { AssetKey } from '../../market-data/assets';
+import { ASSET, AssetKey } from '../../market-data/assets';
 import { StrategyContext, Weights } from '../strategy.types';
 
 /** Rank assets by a scoring function (descending), skipping undefined scores. */
@@ -51,6 +51,55 @@ export function inverseVolWeights(
 /** Clamp helper. */
 export function clamp(x: number, lo: number, hi: number): number {
   return Math.max(lo, Math.min(hi, x));
+}
+
+/** Uptrend filter: true when the asset's level is above its `period`-day SMA. */
+export function trendUp(ctx: StrategyContext, asset: AssetKey, period = 200): boolean {
+  const p = ctx.level(asset);
+  const ma = ctx.sma(asset, period);
+  return p !== undefined && ma !== undefined && p > ma;
+}
+
+/**
+ * Scale every weight by `k`. Used to de-leverage in high volatility. Keep
+ * `k ≤ 1` so the gross weight stays ≤ 1 (the engine has no borrowing; gross > 1
+ * is not real leverage — leverage comes only from the leveraged-ETF assets).
+ */
+export function scaleWeights(w: Weights, k: number): Weights {
+  const out: Weights = {};
+  for (const a of Object.keys(w) as AssetKey[]) out[a] = Number(((w[a] ?? 0) * k).toFixed(4));
+  return out;
+}
+
+/** Equal-weight a set of assets to `budget` (default 1, i.e. fully invested). */
+export function equalWeight(assets: AssetKey[], budget = 1): Weights {
+  const w: Weights = {};
+  if (assets.length === 0) return w;
+  for (const a of assets) w[a] = budget / assets.length;
+  return w;
+}
+
+/**
+ * 12-1 price momentum: trailing 12-month return skipping the most recent month
+ * (level 1m ago ÷ level 12m ago − 1). Skipping the last month is the classic
+ * Jegadeesh-Titman formation window that avoids short-term reversal noise.
+ */
+export function momentum12_1(ctx: StrategyContext, a: AssetKey): number | undefined {
+  const recent = ctx.level(a, 21);
+  const old = ctx.level(a, 252);
+  return recent !== undefined && old !== undefined && old > 0 ? recent / old - 1 : undefined;
+}
+
+/** Best-trending defensive sleeve (intermediate/long Treasuries, gold, or cash). */
+export function bestDefensive(ctx: StrategyContext): AssetKey {
+  return bestBy([ASSET.ITT, ASSET.LTT, ASSET.GOLD, ASSET.CASH], (a) => ctx.ret(a, 126), ASSET.CASH);
+}
+
+/** The `n` individual stocks with the highest 12-1 momentum on the signal day. */
+export function topStocksByMomentum(ctx: StrategyContext, n: number): AssetKey[] {
+  return rankBy(ctx.stocks(), (a) => momentum12_1(ctx, a))
+    .slice(0, n)
+    .map((x) => x.asset);
 }
 
 /**

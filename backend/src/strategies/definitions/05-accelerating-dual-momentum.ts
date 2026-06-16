@@ -1,43 +1,55 @@
 import { ASSET } from '../../market-data/assets';
 import { DAYS } from '../indicators';
 import { StrategyContext, StrategyDefinition, Weights } from '../strategy.types';
-import { bestBy, rankBy } from './_helpers';
+import { bestBy, bestDefensive, trendUp } from './_helpers';
 
 /**
- * Strategy 5: Accelerating Dual Momentum with a broad offensive universe (US
- * large/Nasdaq/small/intl) for better leader selection, and a best-trending
- * Treasury/cash safe asset.
+ * Strategy 5: Dual Momentum with a Bond-Blend brake, UNLEVERAGED. Like strategy 2
+ * but smoother: it picks the strongest equity by 12-month momentum, then — if that
+ * leader has slipped below its own 200-day trend — only half-commits and parks the
+ * rest in intermediate Treasuries, and goes fully defensive when momentum is
+ * negative. Trades a little upside for a lower drawdown.
  */
 export const acceleratingDualMomentum: StrategyDefinition = {
-  id: 'accelerating-dual-momentum',
-  name: '加速雙動能 ADM',
-  shortName: '加速雙動能',
+  id: 'dual-momentum-bond-blend',
+  name: '雙動能債券緩衝',
+  shortName: '雙動能緩衝',
   category: 'momentum',
   description:
-    '用 1/3/6 個月混合動能在大型股/那斯達克/小型股/國際股間擇優，並讓避險端在現金/中/長債中選趨勢最強者。',
+    '挑 12 個月報酬最強的股票指數；若它仍跑輸現金 → 全面防禦買公債/黃金；若它領先但已跌破自身 200 日均線 → 只投一半、另一半放中期公債當緩衝。用「半倉+債券」降低回撤。',
   longDescription:
-    'Accelerating Dual Momentum。對美國大型股、那斯達克、小型股、國際股計算 1、3、6 個月報酬的平均作為「加速動能」分數，' +
-    '挑出最強的市場全額持有；較短的混合回看期讓它比 12 個月動能反應更快。當最強者加速動能仍 ≤ 0 時，避險端在現金、中期、長期公債中' +
-    '選 13612W 動能最強者，改善防禦腳本，提升整體報酬與 Sharpe。',
+    '在雙動能 GEM 的基礎上加一層「趨勢緩衝」，讓持股更平順、回撤更低。每月底先用相對動能在那斯達克、標普、小型股中選 12 個月報酬最強者：' +
+    '(1) 若最強者報酬仍 ≤ 現金 → 絕對動能濾網啟動，全面防禦轉入中期/長期公債、黃金、現金中趨勢最強者；' +
+    '(2) 若最強者領先且仍站上自身 200 日均線 → 100% 持有；' +
+    '(3) 若最強者領先但已跌破 200 日均線（動能還在、趨勢轉弱）→ 只投 50%，另外 50% 放中期公債當緩衝。' +
+    '這個半倉設計在頭部反轉時先降風險，最大回撤低於純雙動能。全程不使用槓桿。',
   rules: [
-    '每月底計算各攻擊資產的加速動能 = (1 月 + 3 月 + 6 月報酬) / 3。',
-    '選加速動能最高者；若 > 0 → 100% 持有。',
-    '若 ≤ 0 → 轉入現金/中期/長期公債中 13612W 動能最強者。',
-    '每月再平衡一次。',
+    '每月底以 12 個月報酬在那斯達克、標普、小型股中選最強者。',
+    '最強者 ≤ 現金報酬：全面防禦（公債/黃金/現金中趨勢最強者）。',
+    '最強者領先且站上 200 日均線：100% 持有。',
+    '最強者領先但跌破 200 日均線：50% 持有 + 50% 中期公債緩衝。每月再平衡、不使用槓桿。',
   ],
-  caveats: ['攻擊池擴大後換手仍偏高。', '依賴股債負相關的避險效果。'],
-  tags: ['動能', '多市場', '避險'],
+  caveats: [
+    '緩衝機制在強多頭中會因為半倉而少賺一些。',
+    '月頻判斷，急轉時落後約一個月。',
+    '同時用動能與趨勢兩個訊號，盤整時換手略多。',
+  ],
+  tags: ['動能', '趨勢緩衝', '低回撤', '不使用槓桿'],
   rebalance: 'monthly',
-  universe: ['大型股/那斯達克/小型股/國際股', '現金/中/長債'],
-  assets: [ASSET.USLC, ASSET.NASDAQ, ASSET.SMALL, ASSET.INTL, ASSET.LTT, ASSET.ITT, ASSET.CASH],
-  coreAssets: [ASSET.USLC, ASSET.LTT, ASSET.ITT],
-  warmupDays: DAYS.YEAR + 5,
+  universe: ['那斯達克100', '標普500', '小型股', '中/長期公債', '黃金', '現金'],
+  assets: [ASSET.NASDAQ, ASSET.USLC, ASSET.SMALL, ASSET.ITT, ASSET.LTT, ASSET.GOLD, ASSET.CASH],
+  coreAssets: [ASSET.USLC, ASSET.NASDAQ],
+  warmupDays: DAYS.YEAR + 10,
   cadence: 'monthly',
   decide(ctx: StrategyContext): Weights {
-    const universe = [ASSET.USLC, ASSET.NASDAQ, ASSET.SMALL, ASSET.INTL];
-    const best = rankBy(universe, (a) => ctx.accel(a))[0];
-    if (best && best.score > 0) return { [best.asset]: 1 };
-    const safe = bestBy([ASSET.CASH, ASSET.ITT, ASSET.LTT], (a) => ctx.score13612W(a), ASSET.LTT);
-    return { [safe]: 1 };
+    const best = bestBy(
+      [ASSET.NASDAQ, ASSET.USLC, ASSET.SMALL],
+      (a) => ctx.ret(a, DAYS.YEAR),
+      ASSET.USLC,
+    );
+    if ((ctx.ret(best, DAYS.YEAR) ?? -1) <= (ctx.ret(ASSET.CASH, DAYS.YEAR) ?? 0)) {
+      return { [bestDefensive(ctx)]: 1 };
+    }
+    return trendUp(ctx, best, 200) ? { [best]: 1 } : { [best]: 0.5, [ASSET.ITT]: 0.5 };
   },
 };

@@ -50,7 +50,9 @@ export function round4(n: number): number {
 }
 
 function gross(w: Weights): number {
-  return Object.values(w).reduce((s: number, x) => s + (x ?? 0), 0);
+  let s = 0;
+  for (const x of Object.values(w)) s += x ?? 0;
+  return s;
 }
 
 /** Describe a signal-driven trade by what the strategy actually did. */
@@ -87,6 +89,7 @@ export function makeContext(md: MarketDataService, i: number): StrategyContext {
     score13612W: (a) => ind.score13612W(md.getLevels(a), i),
     accel: (a) => ind.accelMomentum(md.getLevels(a), i),
     has: (a) => md.getLevels(a)[i] !== undefined,
+    stocks: () => md.getStockKeys().filter((k) => md.getLevels(k)[i] !== undefined),
   };
 }
 

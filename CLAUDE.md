@@ -83,7 +83,10 @@ endpoints map directly to query keys. Example: strategy detail page → `useBack
 - **Data**: `market-data/market-data.service.ts` loads `backend/data/*.json` at startup, builds the
   canonical US trading calendar (from `^GSPC`), and composes **logical assets** (`ASSET.*` in
   `market-data/assets.ts`) — splicing ETF/index histories and synthesizing bond/cash returns from
-  Treasury yields so strategies can backtest to 1990. Leverage is modeled via portfolio weights >1.
+  Treasury yields so strategies can backtest to 1990. Leverage is NOT borrowing: it's modeled by
+  holding synthetic daily-reset **leveraged-ETF assets** (`USLC3X`/`NASDAQ3X`/`USLC2X`/`NASDAQ2X`/`LTT3X`).
+  It also loads **individual stocks** from `data/stocks/` as `STK_<SYM>` assets (total-return level
+  from adjusted close), exposed to strategies via `ctx.stocks()`.
 - **Strategies**: `strategies/definitions/` — one editable file per strategy (`01-*.ts`…`10-*.ts`),
   aggregated by `definitions/index.ts`. Each is a pure
   `decide(ctx) → Weights` using indicators in `strategies/indicators.ts`. The UI's buy/sell
@@ -95,8 +98,21 @@ endpoints map directly to query keys. Example: strategy detail page → `useBack
   `coreAssets` + `warmupDays` drive the data-inception date; `riskLevel`
   and `leverage` are NOT hardcoded — `StrategiesService` derives them from a canonical backtest
   (volatility → risk band; peak exposure → leverage). To add/tune a strategy, edit its file (or add
-  one and register it in `index.ts`). 10 strategies ship: strategy 1 is the flagship (3x Nasdaq
-  gated by QQQ's 20-day MA); strategies 2-10 are research-driven rules-based approaches.
+  one and register it in `index.ts`), then regenerate signals. **10 strategies ship**: `01` is the
+  mandated leveraged flagship (3x Nasdaq gated by QQQ's 20-day MA) — the ONLY strategy that uses
+  leverage. `02–10` are **UNLEVERAGED, skill-based** strategies (peak exposure ≤ 1x, no borrowing —
+  the same playing field as the DCA benchmark): `02-05` are bias-free index asset-allocation (dual
+  momentum / GEM, defensive-canary DAA, Nasdaq trend + bonds, dual-momentum bond-blend); `06-10` are
+  individual-stock factor strategies over the ~500-name S&P 500 universe (cross-sectional momentum,
+  multifactor momentum×low-vol, momentum + bond ballast, momentum-leader pullback, broad momentum).
+  Each `02-10` beats dollar-cost-averaging into **QQQ or VOO by ≥20%** over full history, with Sharpe
+  ≥ the QQQ benchmark AND a **lower max drawdown than buy-and-hold Nasdaq**. That promise — plus the
+  no-leverage and drawdown bounds — is locked by `backtest/strategy-eval.spec.ts` (harness:
+  `backtest/strategy-eval.ts`, which now also reports Calmar = return ÷ maxDD). **Engine rule**:
+  `decide()` weights must sum to ≤ 1; there's no borrowing, so >1x exposure is only possible via the
+  leveraged-ETF assets (used solely by `01`) — returning gross > 1 silently inflates value and is a
+  bug. **Stock strategies carry survivorship bias** (the universe is today's S&P 500 members), so
+  their historical numbers are optimistic — see DATA.md.
 - **Engine**: `backtest/engine.ts` — share-based, NO-borrow daily simulation (leverage only via
   leveraged-ETF assets); ≤3 trades/month; DCA & lump-sum modes; produces a share/dollar trade
   ledger + holdings. `backtest/backtest.service.ts` orchestrates it (strategy + QQQ/VOO benchmarks);
