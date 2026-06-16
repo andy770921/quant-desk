@@ -42,7 +42,13 @@ npm run lint             # Lint all code
 ```bash
 cd backend && node scripts/fetch-market-data.mjs          # 32 core index/ETF/yield series (daily OHLCV)
 cd backend && node scripts/fetch-stocks.mjs AAPL MSFT      # individual stocks → data/stocks/<SYM>/<YEAR>.json
+cd backend && npm run compress:data                        # gzip data/*.json → *.json.gz (run before deploy)
 ```
+
+Data is committed **gzip-compressed** (`*.json.gz`) so the Vercel serverless function stays under the
+250 MB unzipped limit (~416 MB → ~85 MB). `MarketDataService.readJsonFile()` reads both transparently,
+preferring a plain `.json` (fresh from a fetch) and falling back to `.json.gz`. After any fetch, run
+`npm run compress:data` and commit the resulting `.gz` files before deploying.
 
 **Data inventory for strategy research** — `documents/FEAT-1/development/DATA.md`: what data exists
 (daily OHLCV for indices/ETFs/yields + a demo stock universe), the logical-asset layer, the

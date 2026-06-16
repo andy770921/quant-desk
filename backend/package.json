@@ -5,6 +5,7 @@
   "description": "NestJS backend application",
   "scripts": {
     "gen:signals": "node scripts/generate-signal-source.mjs",
+    "compress:data": "node scripts/compress-data.mjs",
     "prebuild": "node scripts/generate-signal-source.mjs",
     "build": "nest build",
     "dev": "nodemon",

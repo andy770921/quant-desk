@@ -1,5 +1,6 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { existsSync, readFileSync } from 'node:fs';
+import { gunzipSync } from 'node:zlib';
 import { resolve } from 'node:path';
 import type { MarketIndexQuote, MarketOverview, PriceSeries } from '@repo/shared';
 import { ASSET, AssetKey, BOND_DURATION, LEVERAGED_ETFS, stockKey } from './assets';
@@ -132,15 +133,27 @@ export class MarketDataService implements OnModuleInit {
     );
   }
 
+  /**
+   * Read a JSON data file, transparently supporting gzip-compressed payloads.
+   * Prefers a plain `.json` (fresh from a fetch script) and falls back to the
+   * committed, gzip-compressed `.json.gz` shipped to keep the deploy bundle
+   * under Vercel's 250 MB function limit. Returns undefined if neither exists.
+   */
+  private readJsonFile<T>(file: string): T | undefined {
+    if (existsSync(file)) return JSON.parse(readFileSync(file, 'utf8')) as T;
+    const gz = `${file}.gz`;
+    if (existsSync(gz)) return JSON.parse(gunzipSync(readFileSync(gz)).toString('utf8')) as T;
+    return undefined;
+  }
+
   private loadRaw() {
     const dir = this.resolveDataDir();
     const manifest = JSON.parse(readFileSync(resolve(dir, 'manifest.json'), 'utf8')) as {
       key: string;
     }[];
     for (const { key } of manifest) {
-      const file = resolve(dir, `${key}.json`);
-      if (!existsSync(file)) continue;
-      this.raw.set(key, JSON.parse(readFileSync(file, 'utf8')) as RawSeries);
+      const series = this.readJsonFile<RawSeries>(resolve(dir, `${key}.json`));
+      if (series) this.raw.set(key, series);
     }
   }
 
@@ -160,8 +173,8 @@ export class MarketDataService implements OnModuleInit {
       const meta = JSON.parse(readFileSync(metaPath, 'utf8')) as { years: string[] };
       const points: RawPoint[] = [];
       for (const year of meta.years) {
-        const yf = resolve(dir, symbol, `${year}.json`);
-        if (existsSync(yf)) points.push(...(JSON.parse(readFileSync(yf, 'utf8')) as RawPoint[]));
+        const pts = this.readJsonFile<RawPoint[]>(resolve(dir, symbol, `${year}.json`));
+        if (pts) points.push(...pts);
       }
       if (points.length === 0) continue;
       points.sort((a, b) => (a.d < b.d ? -1 : 1));
