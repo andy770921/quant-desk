@@ -5,8 +5,8 @@
     "note": "S&P 500 total return (1988+)",
     "type": "INDEX",
     "firstDate": "1988-01-04",
-    "lastDate": "2026-06-12",
-    "count": 9684
+    "lastDate": "2026-06-15",
+    "count": 9685
   },
   {
     "key": "GSPC",
@@ -14,8 +14,8 @@
     "note": "S&P 500 price index (1950+)",
     "type": "INDEX",
     "firstDate": "1970-01-02",
-    "lastDate": "2026-06-12",
-    "count": 14233
+    "lastDate": "2026-06-15",
+    "count": 14234
   },
   {
     "key": "NDX",
@@ -23,8 +23,8 @@
     "note": "Nasdaq 100 price index (1985+)",
     "type": "INDEX",
     "firstDate": "1985-10-01",
-    "lastDate": "2026-06-12",
-    "count": 10254
+    "lastDate": "2026-06-15",
+    "count": 10255
   },
   {
     "key": "IXIC",
@@ -32,8 +32,8 @@
     "note": "Nasdaq Composite (1971+)",
     "type": "INDEX",
     "firstDate": "1971-02-05",
-    "lastDate": "2026-06-12",
-    "count": 13955
+    "lastDate": "2026-06-15",
+    "count": 13956
   },
   {
     "key": "RUT",
@@ -41,8 +41,8 @@
     "note": "Russell 2000 small cap (1987+)",
     "type": "INDEX",
     "firstDate": "1987-09-10",
-    "lastDate": "2026-06-12",
-    "count": 9763
+    "lastDate": "2026-06-15",
+    "count": 9764
   },
   {
     "key": "IRX",
@@ -50,8 +50,8 @@
     "note": "13-week T-bill discount rate % (cash)",
     "type": "INDEX",
     "firstDate": "1970-01-02",
-    "lastDate": "2026-06-12",
-    "count": 14133
+    "lastDate": "2026-06-15",
+    "count": 14134
   },
   {
     "key": "TNX",
@@ -59,8 +59,8 @@
     "note": "10Y Treasury yield %",
     "type": "INDEX",
     "firstDate": "1970-01-02",
-    "lastDate": "2026-06-12",
-    "count": 14133
+    "lastDate": "2026-06-15",
+    "count": 14134
   },
   {
     "key": "TYX",
@@ -68,8 +68,8 @@
     "note": "30Y Treasury yield %",
     "type": "INDEX",
     "firstDate": "1977-02-15",
-    "lastDate": "2026-06-12",
-    "count": 12357
+    "lastDate": "2026-06-15",
+    "count": 12358
   },
   {
     "key": "SPY",
@@ -77,8 +77,8 @@
     "note": "S&P 500 ETF (1993+)",
     "type": "ETF",
     "firstDate": "1993-01-29",
-    "lastDate": "2026-06-12",
-    "count": 8400
+    "lastDate": "2026-06-15",
+    "count": 8401
   },
   {
     "key": "QQQ",
@@ -86,8 +86,8 @@
     "note": "Nasdaq 100 ETF (1999+)",
     "type": "ETF",
     "firstDate": "1999-03-10",
-    "lastDate": "2026-06-12",
-    "count": 6858
+    "lastDate": "2026-06-15",
+    "count": 6859
   },
   {
     "key": "VOO",
@@ -95,8 +95,8 @@
     "note": "Vanguard S&P 500 ETF (2010+)",
     "type": "ETF",
     "firstDate": "2010-09-09",
-    "lastDate": "2026-06-12",
-    "count": 3964
+    "lastDate": "2026-06-15",
+    "count": 3965
   },
   {
     "key": "IWM",
@@ -104,8 +104,8 @@
     "note": "Russell 2000 ETF (2000+)",
     "type": "ETF",
     "firstDate": "2000-05-26",
-    "lastDate": "2026-06-12",
-    "count": 6550
+    "lastDate": "2026-06-15",
+    "count": 6551
   },
   {
     "key": "TLT",
@@ -113,8 +113,8 @@
     "note": "20Y+ Treasury ETF (2002+)",
     "type": "ETF",
     "firstDate": "2002-07-30",
-    "lastDate": "2026-06-12",
-    "count": 6007
+    "lastDate": "2026-06-15",
+    "count": 6008
   },
   {
     "key": "IEF",
@@ -122,8 +122,8 @@
     "note": "7-10Y Treasury ETF (2002+)",
     "type": "ETF",
     "firstDate": "2002-07-30",
-    "lastDate": "2026-06-12",
-    "count": 6007
+    "lastDate": "2026-06-15",
+    "count": 6008
   },
   {
     "key": "SHY",
@@ -131,8 +131,8 @@
     "note": "1-3Y Treasury ETF (2002+)",
     "type": "ETF",
     "firstDate": "2002-07-30",
-    "lastDate": "2026-06-12",
-    "count": 6007
+    "lastDate": "2026-06-15",
+    "count": 6008
   },
   {
     "key": "BIL",
@@ -140,8 +140,8 @@
     "note": "1-3M T-bill ETF (2007+)",
     "type": "ETF",
     "firstDate": "2007-05-30",
-    "lastDate": "2026-06-12",
-    "count": 4791
+    "lastDate": "2026-06-15",
+    "count": 4792
   },
   {
     "key": "GLD",
@@ -149,8 +149,8 @@
     "note": "Gold ETF (2004+)",
     "type": "ETF",
     "firstDate": "2004-11-18",
-    "lastDate": "2026-06-12",
-    "count": 5425
+    "lastDate": "2026-06-15",
+    "count": 5426
   },
   {
     "key": "GCF",
@@ -158,8 +158,8 @@
     "note": "Gold front-month future (2000+)",
     "type": "FUTURE",
     "firstDate": "2000-08-30",
-    "lastDate": "2026-06-15",
-    "count": 6471
+    "lastDate": "2026-06-16",
+    "count": 6472
   },
   {
     "key": "DBC",
@@ -167,8 +167,8 @@
     "note": "Commodity ETF (2006+)",
     "type": "ETF",
     "firstDate": "2006-02-06",
-    "lastDate": "2026-06-12",
-    "count": 5120
+    "lastDate": "2026-06-15",
+    "count": 5121
   },
   {
     "key": "EFA",
@@ -176,8 +176,8 @@
     "note": "MSCI EAFE developed intl ETF (2001+)",
     "type": "ETF",
     "firstDate": "2001-08-27",
-    "lastDate": "2026-06-12",
-    "count": 6235
+    "lastDate": "2026-06-15",
+    "count": 6236
   },
   {
     "key": "VEU",
@@ -185,8 +185,8 @@
     "note": "FTSE all-world ex-US ETF (2007+)",
     "type": "ETF",
     "firstDate": "2007-03-08",
-    "lastDate": "2026-06-12",
-    "count": 4848
+    "lastDate": "2026-06-15",
+    "count": 4849
   },
   {
     "key": "BND",
@@ -194,8 +194,8 @@
     "note": "Total bond market ETF (2007+)",
     "type": "ETF",
     "firstDate": "2007-04-10",
-    "lastDate": "2026-06-12",
-    "count": 4826
+    "lastDate": "2026-06-15",
+    "count": 4827
   },
   {
     "key": "AGG",
@@ -203,8 +203,8 @@
     "note": "Aggregate bond ETF (2003+)",
     "type": "ETF",
     "firstDate": "2003-09-29",
-    "lastDate": "2026-06-12",
-    "count": 5713
+    "lastDate": "2026-06-15",
+    "count": 5714
   },
   {
     "key": "XLK",
@@ -212,8 +212,8 @@
     "note": "Technology",
     "type": "ETF",
     "firstDate": "1998-12-22",
-    "lastDate": "2026-06-12",
-    "count": 6910
+    "lastDate": "2026-06-15",
+    "count": 6911
   },
   {
     "key": "XLF",
@@ -221,8 +221,8 @@
     "note": "Financials",
     "type": "ETF",
     "firstDate": "1998-12-22",
-    "lastDate": "2026-06-12",
-    "count": 6910
+    "lastDate": "2026-06-15",
+    "count": 6911
   },
   {
     "key": "XLE",
@@ -230,8 +230,8 @@
     "note": "Energy",
     "type": "ETF",
     "firstDate": "1998-12-22",
-    "lastDate": "2026-06-12",
-    "count": 6910
+    "lastDate": "2026-06-15",
+    "count": 6911
   },
   {
     "key": "XLV",
@@ -239,8 +239,8 @@
     "note": "Health care",
     "type": "ETF",
     "firstDate": "1998-12-22",
-    "lastDate": "2026-06-12",
-    "count": 6910
+    "lastDate": "2026-06-15",
+    "count": 6911
   },
   {
     "key": "XLY",
@@ -248,8 +248,8 @@
     "note": "Consumer discretionary",
     "type": "ETF",
     "firstDate": "1998-12-22",
-    "lastDate": "2026-06-12",
-    "count": 6910
+    "lastDate": "2026-06-15",
+    "count": 6911
   },
   {
     "key": "XLP",
@@ -257,8 +257,8 @@
     "note": "Consumer staples",
     "type": "ETF",
     "firstDate": "1998-12-22",
-    "lastDate": "2026-06-12",
-    "count": 6910
+    "lastDate": "2026-06-15",
+    "count": 6911
   },
   {
     "key": "XLI",
@@ -266,8 +266,8 @@
     "note": "Industrials",
     "type": "ETF",
     "firstDate": "1998-12-22",
-    "lastDate": "2026-06-12",
-    "count": 6910
+    "lastDate": "2026-06-15",
+    "count": 6911
   },
   {
     "key": "XLB",
@@ -275,8 +275,8 @@
     "note": "Materials",
     "type": "ETF",
     "firstDate": "1998-12-22",
-    "lastDate": "2026-06-12",
-    "count": 6910
+    "lastDate": "2026-06-15",
+    "count": 6911
   },
   {
     "key": "XLU",
@@ -284,7 +284,7 @@
     "note": "Utilities",
     "type": "ETF",
     "firstDate": "1998-12-22",
-    "lastDate": "2026-06-12",
-    "count": 6910
+    "lastDate": "2026-06-15",
+    "count": 6911
   }
 ]
