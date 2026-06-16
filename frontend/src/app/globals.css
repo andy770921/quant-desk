@@ -736,3 +736,140 @@ table.doc-table td:first-child {
 .code-block code {
   color: inherit;
 }
+
+/* --- Buy/sell signal formula (generated from real decide() source) --- */
+.fml-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.fml-badge {
+  font-size: 12px;
+  font-weight: 600;
+  color: #7ee787;
+  background: rgba(126, 231, 135, 0.1);
+  border: 1px solid rgba(126, 231, 135, 0.32);
+  border-radius: 999px;
+  padding: 4px 11px;
+  white-space: nowrap;
+}
+.fml-inline {
+  font-family: 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
+  font-size: 0.88em;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 6px;
+  color: #59a6ff;
+}
+.fml-window {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.fml-filebar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid var(--border);
+}
+.fml-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #3a4257;
+  display: inline-block;
+}
+.fml-dot:nth-child(1) {
+  background: #ff5f57;
+}
+.fml-dot:nth-child(2) {
+  background: #febc2e;
+}
+.fml-dot:nth-child(3) {
+  background: #28c840;
+}
+.fml-filename {
+  margin-left: 8px;
+  font-family: 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
+  font-size: 12px;
+  color: var(--muted, #8893a8);
+}
+.fml-window .fml-code {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+.fml-refs {
+  margin-top: 14px;
+}
+.fml-refs > summary {
+  cursor: pointer;
+  font-size: 13px;
+  color: #59a6ff;
+  padding: 8px 2px;
+  user-select: none;
+  list-style: none;
+}
+.fml-refs > summary::-webkit-details-marker {
+  display: none;
+}
+.fml-refs > summary::before {
+  content: '▸ ';
+  display: inline-block;
+  transition: transform 0.15s ease;
+}
+.fml-refs[open] > summary::before {
+  content: '▾ ';
+}
+.fml-refgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+.fml-ref {
+  display: flex;
+  flex-direction: column;
+}
+.fml-reflabel {
+  font-family: 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: #59a6ff;
+  padding: 6px 12px;
+  background: rgba(89, 166, 255, 0.08);
+  border: 1px solid var(--border);
+  border-bottom: 0;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+}
+.fml-ref .fml-code {
+  margin: 0;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  font-size: 12px;
+}
+
+/* Syntax-highlight token colors (VS-Code-ish, tuned for the dark theme). */
+.fml-code .tok-cm {
+  color: #6a7388;
+  font-style: italic;
+}
+.fml-code .tok-st {
+  color: #7ee787;
+}
+.fml-code .tok-kw {
+  color: #c084fc;
+}
+.fml-code .tok-nu {
+  color: #f0883e;
+}
+.fml-code .tok-fn {
+  color: #59a6ff;
+}
+.fml-code .tok-id {
+  color: #c9d4e8;
+}

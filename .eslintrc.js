@@ -14,7 +14,15 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
-  ignorePatterns: ['node_modules/', 'dist/', 'build/', 'coverage/', '.next/', 'next-env.d.ts'],
+  ignorePatterns: [
+    'node_modules/',
+    'dist/',
+    'build/',
+    'coverage/',
+    '.next/',
+    'next-env.d.ts',
+    '*.generated.ts',
+  ],
   overrides: [
     // TypeScript files
     {

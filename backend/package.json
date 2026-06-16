@@ -4,6 +4,8 @@
   "version": "0.0.0",
   "description": "NestJS backend application",
   "scripts": {
+    "gen:signals": "node scripts/generate-signal-source.mjs",
+    "prebuild": "node scripts/generate-signal-source.mjs",
     "build": "nest build",
     "dev": "nodemon",
     "start": "nest start",

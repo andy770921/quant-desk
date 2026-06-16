@@ -1,8 +1,8 @@
 'use client';
 
-import { use, useMemo, useState } from 'react';
+import { use, useMemo, useState, type ReactNode } from 'react';
 import Link from 'next/link';
-import type { BacktestMode, Rating } from '@repo/shared';
+import type { BacktestMode, Rating, SignalSource } from '@repo/shared';
 import { rateDrawdown, rateReturn, rateSharpe, rateVolatility } from '@repo/shared';
 import { useStrategy } from '@/queries/use-strategy';
 import { useBacktest } from '@/queries/use-backtest';
@@ -171,7 +171,7 @@ export default function StrategyDetailPage({ params }: { params: Promise<{ id: s
       {backtest.isPending && <Loading label="回測計算中…" />}
       {backtest.error && <ErrorState error={backtest.error} />}
       {backtest.data && (
-        <Results data={backtest.data} caveats={s.caveats} signalFormula={s.signalFormula} />
+        <Results data={backtest.data} caveats={s.caveats} signalSource={s.signalSource} />
       )}
     </div>
   );
@@ -180,11 +180,11 @@ export default function StrategyDetailPage({ params }: { params: Promise<{ id: s
 function Results({
   data,
   caveats,
-  signalFormula,
+  signalSource,
 }: {
   data: NonNullable<ReturnType<typeof useBacktest>['data']>;
   caveats: string[];
-  signalFormula: string;
+  signalSource: SignalSource;
 }) {
   const m = data.metrics;
   return (
@@ -365,17 +365,81 @@ function Results({
         </div>
       </div>
 
-      {/* Buy/sell signal formula */}
+      {/* Buy/sell signal formula — generated from the real decide() source */}
       <div className="card" style={{ marginTop: 18 }}>
-        <h2 style={{ fontSize: 18, marginBottom: 6 }}>買賣訊號邏輯 / 公式</h2>
-        <p className="faint" style={{ marginTop: 0, marginBottom: 12 }}>
-          每個交易日（或每月）依下列規則計算目標持倉權重。helper：level/sma/ret/rsi/vol/score13612W/accel。
+        <div className="fml-head">
+          <h2 style={{ fontSize: 18, margin: 0 }}>買賣訊號邏輯 / 公式</h2>
+          <span className="fml-badge" title="此程式碼直接抽取自後端，回測與即時訊號皆執行同一段">
+            ✓ 由 decide() 原始碼自動生成
+          </span>
+        </div>
+        <p className="faint" style={{ marginTop: 8, marginBottom: 14 }}>
+          下方即為後端<strong>實際執行</strong>
+          的決策函式原始碼（非手寫說明）。每個交易日（或每月）呼叫{' '}
+          <code className="fml-inline">decide(ctx)</code>{' '}
+          計算目標持倉權重，因此畫面公式永遠與回測、即時訊號一致，不會走鐘。
         </p>
-        <pre className="code-block">
-          <code>{signalFormula}</code>
-        </pre>
+
+        <div className="fml-window">
+          <div className="fml-filebar">
+            <span className="fml-dot" />
+            <span className="fml-dot" />
+            <span className="fml-dot" />
+            <span className="fml-filename">decide(ctx) → 目標權重</span>
+          </div>
+          <CodeBlock code={signalSource.decide} />
+        </div>
+
+        {signalSource.refs.length > 0 && (
+          <details className="fml-refs">
+            <summary>
+              引用的輔助函式與指標公式（{signalSource.refs.length}）— 點此展開背後的數學
+            </summary>
+            <div className="fml-refgrid">
+              {signalSource.refs.map((r) => (
+                <div className="fml-ref" key={r.name}>
+                  <div className="fml-reflabel">{r.name}()</div>
+                  <CodeBlock code={r.source} />
+                </div>
+              ))}
+            </div>
+          </details>
+        )}
       </div>
     </>
+  );
+}
+
+/** Token classes for the lightweight TS highlighter below. */
+const TS_TOKEN =
+  /(\/\/[^\n]*)|('(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\]|\\.)*`)|\b(const|let|var|return|if|else|for|of|in|new|function|undefined|null|true|false|typeof|interface|type|export|import|from)\b|(\b\d+(?:\.\d+)?\b)|([A-Za-z_$][\w$]*)(?=\s*\()|([A-Za-z_$][\w$]*)/g;
+
+/** Minimal, dependency-free TS syntax highlighting → React nodes (input is escaped by React). */
+function highlightTs(code: string): ReactNode[] {
+  const out: ReactNode[] = [];
+  let last = 0;
+  let key = 0;
+  let m: RegExpExecArray | null;
+  TS_TOKEN.lastIndex = 0;
+  while ((m = TS_TOKEN.exec(code))) {
+    if (m.index > last) out.push(code.slice(last, m.index));
+    const cls = m[1] ? 'cm' : m[2] ? 'st' : m[3] ? 'kw' : m[4] ? 'nu' : m[5] ? 'fn' : 'id';
+    out.push(
+      <span className={`tok-${cls}`} key={key++}>
+        {m[0]}
+      </span>,
+    );
+    last = m.index + m[0].length;
+  }
+  if (last < code.length) out.push(code.slice(last));
+  return out;
+}
+
+function CodeBlock({ code }: { code: string }) {
+  return (
+    <pre className="code-block fml-code">
+      <code>{highlightTs(code)}</code>
+    </pre>
   );
 }
 

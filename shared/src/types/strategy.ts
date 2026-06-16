@@ -35,6 +35,19 @@ export interface StrategySummary {
   dataInception: string;
 }
 
+/**
+ * The verbatim source of a strategy's buy/sell logic, surfaced to the UI.
+ * NOT hand-written — generated from the actual `decide()` function and the
+ * helper / indicator functions it calls, so the displayed math can never drift
+ * from the code that runs. See backend `signal-source.generated.ts`.
+ */
+export interface SignalSource {
+  /** Source text of the strategy's `decide(ctx)` function. */
+  decide: string;
+  /** Source of each helper / indicator function `decide` references, in first-use order. */
+  refs: { name: string; source: string }[];
+}
+
 export interface StrategyDetail extends StrategySummary {
   /** Multi-paragraph explanation of the rationale. */
   longDescription: string;
@@ -42,6 +55,6 @@ export interface StrategyDetail extends StrategySummary {
   rules: string[];
   /** Known caveats / drawdown character. */
   caveats: string[];
-  /** Buy/sell signal logic as a code/pseudo-code snippet for display. */
-  signalFormula: string;
+  /** Buy/sell signal logic, generated from the real `decide()` source (never hand-written). */
+  signalSource: SignalSource;
 }

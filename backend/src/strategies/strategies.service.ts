@@ -5,6 +5,7 @@ import { MarketDataService } from '../market-data/market-data.service';
 import { runEngine } from '../backtest/engine';
 import { annualizedVol } from '../backtest/metrics';
 import { STRATEGY_DEFINITIONS } from './definitions';
+import { SIGNAL_SOURCE } from './definitions/signal-source.generated';
 import { StrategyDefinition } from './strategy.types';
 
 interface DerivedProfile {
@@ -105,7 +106,8 @@ export class StrategiesService {
       longDescription: def.longDescription,
       rules: def.rules,
       caveats: def.caveats,
-      signalFormula: def.signalFormula,
+      // Generated from the real decide() source — see signal-source.generated.ts.
+      signalSource: SIGNAL_SOURCE[def.id] ?? { decide: '', refs: [] },
     };
   }
 }

@@ -86,8 +86,12 @@ endpoints map directly to query keys. Example: strategy detail page → `useBack
   Treasury yields so strategies can backtest to 1990. Leverage is modeled via portfolio weights >1.
 - **Strategies**: `strategies/definitions/` — one editable file per strategy (`01-*.ts`…`10-*.ts`),
   aggregated by `definitions/index.ts`. Each is a pure
-  `decide(ctx) → Weights` using indicators in `strategies/indicators.ts`, plus a `signalFormula`
-  string shown on the UI (keep this string in sync with `decide` — it is the displayed math).
+  `decide(ctx) → Weights` using indicators in `strategies/indicators.ts`. The UI's buy/sell
+  "formula" is NOT hand-written — `scripts/generate-signal-source.mjs` extracts each `decide()`
+  body (plus the helper/indicator functions it calls) verbatim into
+  `definitions/signal-source.generated.ts` (runs on `prebuild`; regenerate manually with
+  `npm run gen:signals`). `signal-source.spec.ts` fails CI if that file drifts from source, so the
+  displayed math always matches the code that runs — never edit the generated file by hand.
   `coreAssets` + `warmupDays` drive the data-inception date; `riskLevel`
   and `leverage` are NOT hardcoded — `StrategiesService` derives them from a canonical backtest
   (volatility → risk band; peak exposure → leverage). To add/tune a strategy, edit its file (or add

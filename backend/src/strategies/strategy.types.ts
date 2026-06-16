@@ -37,8 +37,6 @@ export interface StrategyDefinition {
   longDescription: string;
   rules: string[];
   caveats: string[];
-  /** Buy/sell signal logic as a code/pseudo-code snippet for display. */
-  signalFormula: string;
   tags: string[];
   rebalance: RebalanceCadence;
   /** Human-readable universe for cards. */
