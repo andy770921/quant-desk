@@ -1,15 +1,21 @@
 # QuantDesk — US Quant Strategy Platform
 
-A US-stock **quantitative strategy backtesting platform** (FinLab-style) built on a Next.js + NestJS
-monorepo. It fetches free US market data, runs 19 rules-based strategies through a backtest engine,
-and compares two contribution styles — **fixed monthly DCA** vs. a **one-time lump sum** — against
-QQQ/VOO benchmarks. Signals are computed live and can drive real-time buy/sell alerts.
+**QuantDesk** is a US-stock **quantitative strategy platform** for systematic, rules-based investing.
+It backtests a curated library of 10 strategies across decades of US market data, compares two
+contribution styles — **fixed monthly DCA** vs. a **one-time lump sum** — against QQQ/VOO benchmarks,
+and evaluates every strategy's signal live to drive real-time buy/sell alerts.
 
-> Educational / research use only. Past performance does not predict future results — not investment advice.
+**Live:**
+
+- App — https://quant-desk-strategy.vercel.app/
+- API — https://quant-desk-backend.vercel.app/
+
+> The information provided by QuantDesk does not constitute investment advice. Investing involves
+> risk, including the possible loss of principal, and past performance is not a guarantee of future results.
 
 ## Features
 
-- **19 strategies** — 10 base (flagship: 3x Nasdaq + 20-day MA) + 9 research-improved `*-plus` variants. One editable file per strategy.
+- **10 strategies** — a flagship 3x Nasdaq trend strategy (gated by the QQQ 20-day MA) plus 9 systematic approaches spanning momentum, trend-following, volatility targeting, and risk parity. One editable file per strategy.
 - **Two backtest baselines** — DCA ($2,000/mo) and lump sum ($100,000), each vs. monthly/one-time QQQ & VOO.
 - **Share-based, no-borrow engine** — tracks real shares + cash; leverage only via leveraged ETFs (TQQQ/UPRO/SSO), never margin. Produces a concrete dollar/share trade ledger.
 - **Dynamic grading** — risk level, leverage, and metric ratings (Sharpe / drawdown / volatility / return) are derived from backtests, not hardcoded; thresholds live in one shared module.
