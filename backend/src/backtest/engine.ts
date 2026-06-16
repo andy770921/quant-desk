@@ -1,5 +1,5 @@
 import type { BacktestMode, TradeLeg, TradeRecord } from '@repo/shared';
-import { ASSET, ASSET_LABELS, AssetKey, leverageOf } from '../market-data/assets';
+import { ASSET, assetLabel, AssetKey, leverageOf } from '../market-data/assets';
 import { MarketDataService } from '../market-data/market-data.service';
 import * as ind from '../strategies/indicators';
 import { StrategyContext, Weights } from '../strategies/strategy.types';
@@ -157,9 +157,9 @@ export function runEngine(md: MarketDataService, opts: EngineOptions): EngineRun
       const delta = desired - cur;
       const amount = p ? delta * p : 0;
       if (delta > 0 && amount > MIN_TRADE_USD) {
-        buys.push({ asset: ASSET_LABELS[a] ?? a, shares: round4(delta), amount: round(amount) });
+        buys.push({ asset: assetLabel(a), shares: round4(delta), amount: round(amount) });
       } else if (delta < 0 && -amount > MIN_TRADE_USD) {
-        sells.push({ asset: ASSET_LABELS[a] ?? a, shares: round4(-delta), amount: round(-amount) });
+        sells.push({ asset: assetLabel(a), shares: round4(-delta), amount: round(-amount) });
       }
       if (Math.abs(desired) > 1e-12) shares.set(a, desired);
       else shares.delete(a);

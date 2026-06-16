@@ -104,21 +104,33 @@ endpoints map directly to query keys. Example: strategy detail page → `useBack
   `coreAssets` + `warmupDays` drive the data-inception date; `riskLevel`
   and `leverage` are NOT hardcoded — `StrategiesService` derives them from a canonical backtest
   (volatility → risk band; peak exposure → leverage). To add/tune a strategy, edit its file (or add
-  one and register it in `index.ts`), then regenerate signals. **10 strategies ship**: `01` is the
-  mandated leveraged flagship (3x Nasdaq gated by QQQ's 20-day MA) — the ONLY strategy that uses
-  leverage. `02–10` are **UNLEVERAGED, skill-based** strategies (peak exposure ≤ 1x, no borrowing —
-  the same playing field as the DCA benchmark): `02-05` are bias-free index asset-allocation (dual
-  momentum / GEM, defensive-canary DAA, Nasdaq trend + bonds, dual-momentum bond-blend); `06-10` are
-  individual-stock factor strategies over the ~500-name S&P 500 universe (cross-sectional momentum,
-  multifactor momentum×low-vol, momentum + bond ballast, momentum-leader pullback, broad momentum).
-  Each `02-10` beats dollar-cost-averaging into **QQQ or VOO by ≥20%** over full history, with Sharpe
-  ≥ the QQQ benchmark AND a **lower max drawdown than buy-and-hold Nasdaq**. That promise — plus the
-  no-leverage and drawdown bounds — is locked by `backtest/strategy-eval.spec.ts` (harness:
-  `backtest/strategy-eval.ts`, which now also reports Calmar = return ÷ maxDD). **Engine rule**:
-  `decide()` weights must sum to ≤ 1; there's no borrowing, so >1x exposure is only possible via the
-  leveraged-ETF assets (used solely by `01`) — returning gross > 1 silently inflates value and is a
-  bug. **Stock strategies carry survivorship bias** (the universe is today's S&P 500 members), so
-  their historical numbers are optimistic — see DATA.md.
+  one and register it in `index.ts`), then regenerate signals. **10 strategies ship**, and every
+  one holds **AT MOST 10 instruments** and trades on **at most 3 days a month** (the engine enforces
+  the ≤3-trade cap). `01` is the mandated leveraged flagship (3x Nasdaq gated by QQQ's 20-day MA).
+  `02–06` are **leveraged-ETF** strategies (leverage held with cash via the synthetic leveraged-ETF
+  assets, never on margin — the user-approved lever) that beat QQQ DCA in BOTH the 1990 and 2010
+  windows by only gearing up inside a 200-day uptrend and sizing leverage by volatility:
+  `02` vol-targeted leveraged Nasdaq (cap 2x), `03` leveraged dual-momentum rotation (2x winner of
+  Nasdaq/S&P), `04` balanced leveraged growth (65% 2x Nasdaq + 35% long Treasury), `05` aggressive
+  vol-targeted leveraged Nasdaq (cap 3x), `06` trend-gated HFEA leveraged risk-parity (3x Nasdaq +
+  trend-gated 3x LTT / gold). `07–10` are **leveraged-core + stock-satellite** books: a dominant
+  vol-targeted leveraged-Nasdaq core (the SAME bias-free lever as `02`/`05`, held with cash via the
+  leveraged-ETF assets) does the heavy lifting so each beats QQQ in BOTH the 1990 and 2010 windows,
+  with a modest low-vol-momentum stock satellite over the ~500-name S&P 500 universe for an honest,
+  high-Sharpe factor tilt (the core, not survivorship-biased single-name concentration, drives the
+  return): `07` 80% 2x core + 20% low-vol momentum stocks, `08` 70% 2x core + 15% stocks + 15% gold
+  hedge, `09` 85% 2x core + 15% stocks (most index-like), `10` 75% 2x core + 15% stocks + 12% Treasury
+  cushion. Each `02-10` simulates **investing $2000/month** and beats dollar-cost-averaging into
+  **QQQ by ≥15%** over full history (a ≥10% floor is tolerated for the gentlest book), with a Sharpe
+  ≥ the QQQ benchmark; the bias-free leveraged `02-06` also clear the ≥15% bar from a 2010 start,
+  while `07-10` clear the **≥10%** bar from 2010 (+11–14%). That promise + the ≤10-holdings bound is
+  locked by `backtest/strategy-eval.spec.ts` (harness: `backtest/strategy-eval.ts`, which also reports
+  Calmar = return ÷ maxDD). **Engine rule**: `decide()` weights must sum to ≤ 1; there's no
+  borrowing, so >1x market exposure is only possible via the leveraged-ETF assets — returning gross
+  > 1 silently inflates value and is a bug. **Stock satellites in `07-10` carry survivorship bias**
+  (the universe is today's S&P 500 members), but it is now confined to the ≤20% stock sleeve — the
+  leveraged index core is bias-free, so `07-10` figures are far more credible than the old
+  ~50x pure-momentum books they replaced. See DATA.md.
 - **Engine**: `backtest/engine.ts` — share-based, NO-borrow daily simulation (leverage only via
   leveraged-ETF assets); ≤3 trades/month; DCA & lump-sum modes; produces a share/dollar trade
   ledger + holdings. `backtest/backtest.service.ts` orchestrates it (strategy + QQQ/VOO benchmarks);

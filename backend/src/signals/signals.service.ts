@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import type { CurrentSignal, SignalAllocation, SignalChange, SignalStance } from '@repo/shared';
-import { ASSET, ASSET_LABELS, AssetKey } from '../market-data/assets';
+import { ASSET, ASSET_LABELS, AssetKey, assetLabel } from '../market-data/assets';
 import { MarketDataService } from '../market-data/market-data.service';
 import { makeContext } from '../backtest/engine';
 import { StrategiesService } from '../strategies/strategies.service';
@@ -89,7 +89,7 @@ export class SignalsService {
     for (const [a, w] of Object.entries(weights)) {
       if (!w) continue;
       gross += w;
-      out.push({ asset: ASSET_LABELS[a as AssetKey] ?? a, weightPct: Math.round(w * 1000) / 10 });
+      out.push({ asset: assetLabel(a as AssetKey), weightPct: Math.round(w * 1000) / 10 });
     }
     if (gross < 0.999) {
       out.push({

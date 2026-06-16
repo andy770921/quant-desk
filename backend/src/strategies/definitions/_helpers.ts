@@ -103,6 +103,78 @@ export function topStocksByMomentum(ctx: StrategyContext, n: number): AssetKey[]
 }
 
 /**
+ * Momentum × low-volatility composite (FinLab's recommended core pairing):
+ * take the `pool` strongest 12-1 momentum names, then keep the `keep` with the
+ * LOWEST trailing 6-month realized volatility. Combining the momentum and
+ * low-volatility anomalies tames single-name risk and lifts risk-adjusted return.
+ */
+export function lowVolMomentumStocks(ctx: StrategyContext, pool: number, keep: number): AssetKey[] {
+  return topStocksByMomentum(ctx, pool)
+    .map((s) => ({ s, v: ctx.vol(s, 126) }))
+    .filter((x): x is { s: AssetKey; v: number } => x.v !== undefined)
+    .sort((a, b) => a.v - b.v)
+    .slice(0, keep)
+    .map((x) => x.s);
+}
+
+/**
+ * Volatility-targeted equity exposure: scale exposure so that
+ * exposure × recent volatility ≈ `target` annualized vol, clamped to [0, cap].
+ * A robust, single-knob risk control (no parameter sweeping) that keeps a
+ * leveraged sleeve from over-gearing in turbulent markets.
+ */
+export function volTargetExposure(
+  ctx: StrategyContext,
+  asset: AssetKey,
+  target: number,
+  cap: number,
+  volDays = 63,
+): number {
+  const v = ctx.vol(asset, volDays) ?? 0.25;
+  return clamp(target / Math.max(v, 0.06), 0, cap);
+}
+
+/**
+ * Trend-gated, vol-targeted leveraged Nasdaq core, scaled to `budget`. Reuses the
+ * EXACT non-overfit lever proven by strategies 02/05 — exposure = target ÷ recent
+ * realized vol, capped, expressed as a 1x/2x Nasdaq-ETF blend (held with cash,
+ * never on margin). The caller owns the 200-day trend gate. This lets the
+ * otherwise-unleveraged stock books (07-09) earn a credible 2010-window edge from
+ * the same principled index lever instead of leaning on survivorship-biased
+ * single-name concentration. `target`/`cap` are shared across the three books
+ * (only the core/satellite split differs) to avoid per-strategy parameter mining.
+ */
+export function leveragedNasdaqCore(
+  ctx: StrategyContext,
+  budget: number,
+  target = 0.3,
+  cap = 2,
+): Weights {
+  const exposure = volTargetExposure(ctx, ASSET.NASDAQ, target, cap);
+  return scaleWeights(equityExposureWeights(exposure, ASSET.NASDAQ, ASSET.NASDAQ2X), budget);
+}
+
+/**
+ * Safety net: keep only the `maxN` largest-weight holdings and renormalize to
+ * the original gross. Guarantees a strategy never returns more than `maxN`
+ * distinct positions (the platform caps every strategy at 10 to keep the book
+ * easy to follow). Most strategies are already ≤ maxN by construction; this
+ * makes the bound explicit and defensive.
+ */
+export function capHoldings(w: Weights, maxN: number): Weights {
+  const entries = (Object.entries(w) as [AssetKey, number][]).filter(([, x]) => (x ?? 0) > 0);
+  if (entries.length <= maxN) return w;
+  entries.sort((a, b) => b[1] - a[1]);
+  const kept = entries.slice(0, maxN);
+  const grossAll = entries.reduce((s, [, x]) => s + x, 0);
+  const grossKept = kept.reduce((s, [, x]) => s + x, 0);
+  const scale = grossKept > 0 ? grossAll / grossKept : 1;
+  const out: Weights = {};
+  for (const [a, x] of kept) out[a] = Number((x * scale).toFixed(4));
+  return out;
+}
+
+/**
  * Express a target equity *exposure* E (in "x" of the index) as long-only,
  * no-borrow weights by blending a 1x index with a leveraged ETF — exactly how a
  * retail investor gets >1x without margin (buy TQQQ/UPRO/SSO):

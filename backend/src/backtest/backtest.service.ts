@@ -9,7 +9,7 @@ import type {
   HoldingSlice,
 } from '@repo/shared';
 import { MarketDataService } from '../market-data/market-data.service';
-import { ASSET, ASSET_LABELS } from '../market-data/assets';
+import { ASSET, assetLabel } from '../market-data/assets';
 import { StrategiesService } from '../strategies/strategies.service';
 import { EngineRun, round, round4, runEngine } from './engine';
 import { annualizedVol, cagr, maxDrawdown, sharpeRatio, xirr } from './metrics';
@@ -164,7 +164,7 @@ export class BacktestService {
       if (p === undefined || s <= 0) continue;
       const value = s * p;
       slices.push({
-        asset: ASSET_LABELS[a] ?? a,
+        asset: assetLabel(a),
         shares: round4(s),
         price: round(p),
         value: round(value),

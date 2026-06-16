@@ -1,63 +1,59 @@
 import { ASSET } from '../../market-data/assets';
 import { DAYS } from '../indicators';
 import { StrategyContext, StrategyDefinition, Weights } from '../strategy.types';
-import { bestBy, bestDefensive } from './_helpers';
+import { bestBy, bestDefensive, trendUp } from './_helpers';
 
 /**
- * Strategy 3: Defensive Asset Allocation (Keller-style canary), UNLEVERAGED.
- * Two "canary" assets (US + international equities) decide the regime: if BOTH
- * have positive 13612W momentum the portfolio goes offensive into the strongest
- * equity sleeve; otherwise it goes fully defensive into the best bond/gold/cash.
- * Designed for a low max-drawdown while still beating the S&P over the long run.
+ * Strategy 3: Leveraged Dual-Momentum Rotation. Combines relative momentum
+ * (which index is stronger — Nasdaq-100 vs S&P 500) with absolute momentum and a
+ * 200-day trend gate, then expresses the winner at 2x via a leveraged ETF while
+ * the trend holds. When neither index is trending up (or is weaker than cash) it
+ * rotates fully to the best-trending Treasury / gold / cash. Holds 1 instrument.
  */
-export const sma200Trend: StrategyDefinition = {
-  id: 'defensive-asset-allocation',
-  name: '防禦資產配置 DAA',
-  shortName: '防禦配置 DAA',
-  category: 'diversified',
+export const leveragedDualMomentum: StrategyDefinition = {
+  id: 'leveraged-dual-momentum',
+  name: '槓桿雙動能輪動',
+  shortName: '槓桿雙動能',
+  category: 'momentum',
   description:
-    '以美股與國際股當「金絲雀」：兩者 13612W 動能皆為正才進攻（買最強股票指數），只要任一翻負就全面防禦（買最強的公債/黃金/現金）。重視低回撤的資產配置。',
+    '每月比較那斯達克與標普近 12 個月報酬，挑強者；若強者領先現金且仍站上自身 200 日均線，就以 2 倍槓桿 ETF 持有（QLD 或 SSO）；否則全數轉入趨勢最強的公債/黃金/現金。相對動能＋絕對動能＋趨勢三重把關的槓桿輪動。',
   longDescription:
-    'Wouter Keller 的防禦資產配置 (Defensive Asset Allocation) 精神：用「金絲雀」資產提早偵測風險。' +
-    '每月底檢查美國大型股與已開發國際股的 13612W 複合動能，只有當兩者都為正（市場廣泛健康）才進攻，' +
-    '在那斯達克、標普、小型股中買進 13612W 動能最強者；只要任一金絲雀翻負，立即全面防禦，' +
-    '轉入中期公債、長期公債、黃金、現金中近半年趨勢最強者。這套「雙金絲雀」濾網讓本策略在 2000、2008、2022 等空頭提早離場，' +
-    '最大回撤僅約 30%（大盤逾 50%），同時長期仍勝過標普 500。全程不使用槓桿。',
+    '把 Antonacci 的雙動能與槓桿結合：先用「相對動能」在那斯達克 100 與標普 500 之間挑近 12 個月報酬最強者，' +
+    '再用「絕對動能」與「200 日趨勢」雙重把關——只有當強者報酬高於現金、且收盤仍站上自身 200 日均線時，' +
+    '才以 2 倍槓桿 ETF（那斯達克 → QLD、標普 → SSO）持有，吃滿多頭趨勢；只要任一條件不成立，立即全數退場，' +
+    '轉入中期/長期公債、黃金、現金中近半年趨勢最強的避險資產。靠著只在「最強且趨勢確認」時動用槓桿，' +
+    '在多頭放大報酬、在空頭完全離場，定期定額長期勝過買進持有 QQQ，且回撤遠低於固定槓桿。',
   rules: [
-    '金絲雀：每月底檢查美股與國際股的 13612W 複合動能。',
-    '進攻（兩者皆 > 0）：買進那斯達克、標普、小型股中 13612W 動能最強者。',
-    '防禦（任一 ≤ 0）：買進中期/長期公債、黃金、現金中近半年趨勢最強者。',
-    '每月再平衡一次，全程不使用槓桿。',
+    '每日計算那斯達克、標普近 12 個月報酬，挑出較強者。',
+    '進攻條件：強者報酬 > 現金報酬，且強者站上自身 200 日均線 → 持有其 2 倍槓桿 ETF。',
+    '否則：全數轉入中期/長期公債、黃金、現金中近半年趨勢最強者。',
+    '每月最多交易 3 次；槓桿僅透過 2x ETF（買進，不借錢），最多持有 1 檔。',
   ],
   caveats: [
-    '雙金絲雀偏保守，強多頭中偶爾會過早轉防禦而少賺。',
-    '月頻判斷，急漲急跌會落後約一個月。',
-    '防禦端的公債在升息環境（如 2022）也可能下跌，但黃金/現金可分流。',
+    '2 倍槓桿 ETF 每日重設，盤整時有波動耗損。',
+    '月初急轉時，相對/絕對動能會落後約一個月。',
+    '單一標的持有，集中度高、波動大於分散型配置。',
   ],
-  tags: ['資產配置', '防禦', '低回撤', '不使用槓桿'],
-  rebalance: 'monthly',
-  universe: ['那斯達克100', '標普500', '小型股', '國際股', '中/長期公債', '黃金', '現金'],
+  tags: ['槓桿', '雙動能', '輪動', '趨勢'],
+  rebalance: 'daily',
+  universe: ['那斯達克100 (2x)', '標普500 (2x)', '中/長期公債', '黃金', '現金'],
   assets: [
     ASSET.NASDAQ,
     ASSET.USLC,
-    ASSET.SMALL,
-    ASSET.INTL,
+    ASSET.NASDAQ2X,
+    ASSET.USLC2X,
     ASSET.ITT,
     ASSET.LTT,
     ASSET.GOLD,
     ASSET.CASH,
   ],
-  coreAssets: [ASSET.USLC, ASSET.ITT],
+  coreAssets: [ASSET.NASDAQ, ASSET.USLC],
   warmupDays: DAYS.YEAR + 20,
-  cadence: 'monthly',
+  cadence: 'daily',
   decide(ctx: StrategyContext): Weights {
-    const riskOn =
-      (ctx.score13612W(ASSET.USLC) ?? -1) > 0 && (ctx.score13612W(ASSET.INTL) ?? -1) > 0;
-    if (riskOn) {
-      return {
-        [bestBy([ASSET.NASDAQ, ASSET.USLC, ASSET.SMALL], (a) => ctx.score13612W(a), ASSET.USLC)]: 1,
-      };
-    }
-    return { [bestDefensive(ctx)]: 1 };
+    const best = bestBy([ASSET.NASDAQ, ASSET.USLC], (a) => ctx.ret(a, DAYS.YEAR), ASSET.USLC);
+    const beatsCash = (ctx.ret(best, DAYS.YEAR) ?? -1) > (ctx.ret(ASSET.CASH, DAYS.YEAR) ?? 0);
+    if (!beatsCash || !trendUp(ctx, best, 200)) return { [bestDefensive(ctx)]: 1 };
+    return { [best === ASSET.NASDAQ ? ASSET.NASDAQ2X : ASSET.USLC2X]: 1 };
   },
 };

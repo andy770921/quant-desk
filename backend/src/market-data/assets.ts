@@ -55,6 +55,13 @@ export const stockKey = (symbol: string): StockKey => `STK_${symbol}`;
 export const symbolOf = (a: AssetKey): string | undefined =>
   a.startsWith('STK_') ? a.slice(4) : undefined;
 
+/**
+ * Human-readable label for any asset key. Logical assets use their Chinese
+ * label; individual stocks render as their plain US ticker (e.g. `STK_AAPL` →
+ * `AAPL`) rather than the internal key. Use this everywhere an asset is shown.
+ */
+export const assetLabel = (a: AssetKey): string => ASSET_LABELS[a] ?? symbolOf(a) ?? a;
+
 export const SECTOR_ASSETS: AssetKey[] = [
   ASSET.SEC_XLK,
   ASSET.SEC_XLF,

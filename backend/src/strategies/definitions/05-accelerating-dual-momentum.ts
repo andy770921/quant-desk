@@ -1,55 +1,57 @@
 import { ASSET } from '../../market-data/assets';
 import { DAYS } from '../indicators';
 import { StrategyContext, StrategyDefinition, Weights } from '../strategy.types';
-import { bestBy, bestDefensive, trendUp } from './_helpers';
+import { bestDefensive, equityExposureWeights, trendUp, volTargetExposure } from './_helpers';
 
 /**
- * Strategy 5: Dual Momentum with a Bond-Blend brake, UNLEVERAGED. Like strategy 2
- * but smoother: it picks the strongest equity by 12-month momentum, then — if that
- * leader has slipped below its own 200-day trend — only half-commits and parks the
- * rest in intermediate Treasuries, and goes fully defensive when momentum is
- * negative. Trades a little upside for a lower drawdown.
+ * Strategy 5: Aggressive Volatility-Targeted Leveraged Nasdaq (up to 3x). The
+ * higher-octane sibling of strategy 2: same 200-day trend gate, but a higher vol
+ * target and a 3x cap (blending 1x / 2x / 3x Nasdaq ETFs). For investors who want
+ * maximum trend-following upside and can stomach deeper drawdowns. Steps fully
+ * aside to the best defensive sleeve below the 200-day MA. Holds at most 2.
  */
-export const acceleratingDualMomentum: StrategyDefinition = {
-  id: 'dual-momentum-bond-blend',
-  name: '雙動能債券緩衝',
-  shortName: '雙動能緩衝',
-  category: 'momentum',
+export const aggressiveVolTargetNasdaq: StrategyDefinition = {
+  id: 'aggressive-leveraged-nasdaq',
+  name: '積極波動目標槓桿那斯達克',
+  shortName: '積極槓桿Ndx',
+  category: 'trend-following',
   description:
-    '挑 12 個月報酬最強的股票指數；若它仍跑輸現金 → 全面防禦買公債/黃金；若它領先但已跌破自身 200 日均線 → 只投一半、另一半放中期公債當緩衝。用「半倉+債券」降低回撤。',
+    '與「波動目標槓桿那斯達克」同樣的 200 日趨勢濾網，但目標波動更高、槓桿上限拉到 3 倍（用 1x/2x/3x 那斯達克 ETF 組成）。追求趨勢多頭的最大上漲，回撤也更深。跌破均線一樣全數轉入趨勢最強的避險資產。',
   longDescription:
-    '在雙動能 GEM 的基礎上加一層「趨勢緩衝」，讓持股更平順、回撤更低。每月底先用相對動能在那斯達克、標普、小型股中選 12 個月報酬最強者：' +
-    '(1) 若最強者報酬仍 ≤ 現金 → 絕對動能濾網啟動，全面防禦轉入中期/長期公債、黃金、現金中趨勢最強者；' +
-    '(2) 若最強者領先且仍站上自身 200 日均線 → 100% 持有；' +
-    '(3) 若最強者領先但已跌破 200 日均線（動能還在、趨勢轉弱）→ 只投 50%，另外 50% 放中期公債當緩衝。' +
-    '這個半倉設計在頭部反轉時先降風險，最大回撤低於純雙動能。全程不使用槓桿。',
+    '策略 2 的積極版，給能承受較深回撤、想吃滿趨勢的投資人。同樣只在那斯達克站上 200 日均線時進場，' +
+    '但波動目標設得更高（年化約 45%），槓桿上限放寬到 3 倍，透過 1x、2x、3x 那斯達克 ETF（TQQQ 類）的組合達成（買 ETF，不借錢）。' +
+    '波動目標仍會在市場動盪時自動降低槓桿，避免在高波動裡被耗損吃乾，但整體曝險明顯高於穩健版，' +
+    '長期報酬最高、最大回撤也最深（約 55%）。一旦跌破 200 日均線，立即全數轉入中期/長期公債、黃金、現金中近半年趨勢最強者。' +
+    '只在趨勢確認時動用高槓桿、空頭完全離場，是定期定額長期擊敗 QQQ 的關鍵。',
   rules: [
-    '每月底以 12 個月報酬在那斯達克、標普、小型股中選最強者。',
-    '最強者 ≤ 現金報酬：全面防禦（公債/黃金/現金中趨勢最強者）。',
-    '最強者領先且站上 200 日均線：100% 持有。',
-    '最強者領先但跌破 200 日均線：50% 持有 + 50% 中期公債緩衝。每月再平衡、不使用槓桿。',
+    '每日檢查那斯達克 100 是否站上 200 日均線。',
+    '站上：曝險 = 45% ÷ 近 3 個月年化波動（上限 3 倍），以 1x/2x/3x ETF 組成。',
+    '跌破：全數轉入中期/長期公債、黃金、現金中近半年趨勢最強者。',
+    '每月最多交易 3 次；槓桿僅透過槓桿型 ETF（買進，不借錢），最多持有 2 檔。',
   ],
   caveats: [
-    '緩衝機制在強多頭中會因為半倉而少賺一些。',
-    '月頻判斷，急轉時落後約一個月。',
-    '同時用動能與趨勢兩個訊號，盤整時換手略多。',
+    '3 倍 ETF 每日重設，波動耗損明顯，回撤可達 55% 以上。',
+    '200 日均線盤整時來回穿越，假訊號成本較高。',
+    '波動最大，定期定額過程中的帳面起伏需要強心臟。',
   ],
-  tags: ['動能', '趨勢緩衝', '低回撤', '不使用槓桿'],
-  rebalance: 'monthly',
-  universe: ['那斯達克100', '標普500', '小型股', '中/長期公債', '黃金', '現金'],
-  assets: [ASSET.NASDAQ, ASSET.USLC, ASSET.SMALL, ASSET.ITT, ASSET.LTT, ASSET.GOLD, ASSET.CASH],
-  coreAssets: [ASSET.USLC, ASSET.NASDAQ],
-  warmupDays: DAYS.YEAR + 10,
-  cadence: 'monthly',
+  tags: ['槓桿', '趨勢', '波動目標', '積極'],
+  rebalance: 'daily',
+  universe: ['那斯達克100 (1x/2x/3x)', '中/長期公債', '黃金', '現金'],
+  assets: [
+    ASSET.NASDAQ,
+    ASSET.NASDAQ2X,
+    ASSET.NASDAQ3X,
+    ASSET.ITT,
+    ASSET.LTT,
+    ASSET.GOLD,
+    ASSET.CASH,
+  ],
+  coreAssets: [ASSET.NASDAQ],
+  warmupDays: 210,
+  cadence: 'daily',
   decide(ctx: StrategyContext): Weights {
-    const best = bestBy(
-      [ASSET.NASDAQ, ASSET.USLC, ASSET.SMALL],
-      (a) => ctx.ret(a, DAYS.YEAR),
-      ASSET.USLC,
-    );
-    if ((ctx.ret(best, DAYS.YEAR) ?? -1) <= (ctx.ret(ASSET.CASH, DAYS.YEAR) ?? 0)) {
-      return { [bestDefensive(ctx)]: 1 };
-    }
-    return trendUp(ctx, best, 200) ? { [best]: 1 } : { [best]: 0.5, [ASSET.ITT]: 0.5 };
+    if (!trendUp(ctx, ASSET.NASDAQ, 200)) return { [bestDefensive(ctx)]: 1 };
+    const exposure = volTargetExposure(ctx, ASSET.NASDAQ, 0.45, 3, DAYS.QUARTER);
+    return equityExposureWeights(exposure, ASSET.NASDAQ, ASSET.NASDAQ2X, ASSET.NASDAQ3X);
   },
 };

@@ -1,48 +1,75 @@
-import { ASSET } from '../../market-data/assets';
-import { DAYS } from '../indicators';
+import { ASSET, AssetKey } from '../../market-data/assets';
 import { StrategyContext, StrategyDefinition, Weights } from '../strategy.types';
-import { bestDefensive, equalWeight, topStocksByMomentum, trendUp } from './_helpers';
+import {
+  bestDefensive,
+  capHoldings,
+  equalWeight,
+  leveragedNasdaqCore,
+  lowVolMomentumStocks,
+  trendUp,
+} from './_helpers';
 
 /**
- * Strategy 10: Broad Stock Momentum (top 75), UNLEVERAGED. The widest, lowest-
- * turnover momentum book on the platform — equal-weighting the 75 strongest
- * 12-1 momentum names is close to a "momentum-tilted large-cap index", which
- * keeps single-name and survivorship-bias impact lower than concentrated books.
- * Trend-gated to bonds when the market is below its 200-day average.
+ * Strategy 10: Leveraged Nasdaq core + momentum satellite + bond cushion. The
+ * credible successor to the old pure-momentum top-8 book (whose 49x full-history
+ * figure was a survivorship-bias mirage): 75% in a vol-targeted leveraged-Nasdaq
+ * core (the bias-free engine that wins both windows) + 15% low-vol momentum stocks
+ * + a permanent 12% intermediate-Treasury cushion that softens equity drawdowns.
+ * Trend-gated to the best defensive sleeve below the 200-day MA. Holds ≤9.
  */
-export const allWeather: StrategyDefinition = {
-  id: 'stock-momentum-broad-75',
-  name: '廣度個股動能 75',
-  shortName: '廣度動能75',
-  category: 'momentum',
+export const momentumBondBallast: StrategyDefinition = {
+  id: 'stock-momentum-bond-ballast',
+  name: '槓桿核心＋債券緩衝',
+  shortName: '核心＋債券',
+  category: 'diversified',
   description:
-    '大盤多頭時等權持有 12-1 動能最強的 75 檔個股（最廣、最分散的動能組合，近似「動能傾斜的大型股指數」）；大盤跌破 200 日均線則轉入公債/黃金/現金。換手與集中度都最低。',
+    '大盤多頭時，75% 配置波動目標槓桿那斯達克核心（多頭放大、動盪降槓桿），15% 衛星持有「top-30 動能中波動最低的 6 檔」個股，並固定 12% 配置中期公債緩衝回撤；大盤跌破 200 日均線則全數轉入趨勢最強的公債/黃金/現金。績效由無偏誤的指數核心驅動，而非集中押注個股。',
   longDescription:
-    '與「個股動能 50」同樣是橫斷面動能，但持有更廣的 75 檔，是平台上最分散、最低換手的動能策略。' +
-    '持股越廣，越接近「動能傾斜的大型股指數」，單一個股風險與存活者偏誤的影響也相對較低，績效更貼近動能因子本身（而非少數明星股）。' +
-    '每月底等權買進 12-1 動能最強的 75 檔，並以大盤 200 日均線為總開關：跌破時全數轉入中期/長期公債、黃金、現金中趨勢最強者。' +
-    '相較「個股動能 50」報酬略低、但更穩、回撤更小。全程不使用槓桿。',
+    '把波動目標的槓桿指數核心與固定債券緩衝結合，做成一個績效可信、攻守兼具的「核心＋緩衝」組合，' +
+    '取代舊版「純動能 8 檔」——後者 49 倍的歷史績效其實是存活者偏誤造成的假象。' +
+    '當大盤站上 200 日均線：75% 作為核心，採波動目標的槓桿那斯達克（曝險 = 45% ÷ 近 3 個月年化波動，上限 2 倍，以 1x/2x ETF 組成、買進不借錢，多頭時幾乎滿倉 2 倍）——' +
+    '報酬來自這個無個股偏誤的指數核心，不再依賴集中押注「今日贏家」；15% 衛星持有 12-1 動能最強 30 檔中波動最低的 6 檔個股；另 12% 固定配置中期公債，在股市回檔時提供緩衝。' +
+    '當大盤跌破 200 日均線：全數轉入中期/長期公債、黃金、現金中近半年趨勢最強者。最多持有 9 檔，含槓桿型 ETF（買進，不借錢）。',
   rules: [
-    '每月底計算股票池中每檔的 12-1 動能。',
-    '大盤站上 200 日均線：等權買進動能最強的 75 檔個股。',
+    '大盤站上 200 日均線：75% 波動目標槓桿那斯達克核心（曝險 45% ÷ 近 3 月年化波動，上限 2 倍，1x/2x ETF）。',
+    '15% 衛星：等權持有「top-30 動能中波動最低的 6 檔」個股。',
+    '固定 12% 配置中期公債（緩衝回撤）。',
     '大盤跌破 200 日均線：全數轉入公債/黃金/現金中近半年趨勢最強者。',
-    '每月再平衡一次，全程不使用槓桿。',
+    '每月最多交易 3 次；槓桿僅透過槓桿型 ETF（買進，不借錢），最多持有 9 檔。',
   ],
   caveats: [
-    '股票池為目前 S&P 500 成分股，存在存活者偏誤，歷史績效偏樂觀（但廣度越大影響越小）。',
-    '持股廣、貼近大盤，超額報酬會低於集中型動能。',
-    '動能崩潰期（如 2009 反轉）仍會回撤，靠 200 日均線總開關緩解。',
+    '股票池為目前 S&P 500 成分股，存在存活者偏誤，惟僅 15% 衛星受其影響，核心無此偏誤。',
+    '核心含 2 倍槓桿 ETF（每日重設），波動耗損與回撤高於純指數（約 46%）。',
+    '股債同跌的環境（如 2022）債券緩衝效果會打折。',
   ],
-  tags: ['動能', '選股', '廣度', '低換手', '不使用槓桿'],
-  rebalance: 'monthly',
-  universe: ['S&P 500 個股（約 500 檔）', '中/長期公債', '黃金', '現金'],
-  assets: [ASSET.NASDAQ, ASSET.ITT, ASSET.LTT, ASSET.GOLD, ASSET.CASH],
+  tags: ['槓桿核心', '動能', '債券緩衝', '波動目標', '分散'],
+  rebalance: 'daily',
+  universe: [
+    '那斯達克100 (1x/2x)',
+    'S&P 500 個股（最多持 6）',
+    '中期公債',
+    '長期公債',
+    '黃金',
+    '現金',
+  ],
+  assets: [ASSET.NASDAQ, ASSET.NASDAQ2X, ASSET.ITT, ASSET.LTT, ASSET.GOLD, ASSET.CASH],
   coreAssets: [ASSET.USLC],
-  warmupDays: DAYS.YEAR + 10,
-  cadence: 'monthly',
+  warmupDays: 262,
+  cadence: 'daily',
   decide(ctx: StrategyContext): Weights {
     if (!trendUp(ctx, ASSET.USLC, 200)) return { [bestDefensive(ctx)]: 1 };
-    const top = topStocksByMomentum(ctx, 75);
-    return top.length < 10 ? { [ASSET.NASDAQ]: 1 } : equalWeight(top);
+    // 75% vol-targeted leveraged Nasdaq core (2x cap, the bias-free engine that
+    // wins BOTH windows) + 15% low-vol momentum stocks + a 12% intermediate-
+    // Treasury cushion. The credible successor to the old pure-momentum top-8 book:
+    // performance now comes from the index core, not survivorship-biased single-
+    // name concentration, so the bond sleeve still cushions without a 49x mirage.
+    const top: AssetKey[] = lowVolMomentumStocks(ctx, 30, 6);
+    if (top.length < 5) {
+      return capHoldings({ ...leveragedNasdaqCore(ctx, 0.88, 0.45, 2), [ASSET.ITT]: 0.12 }, 10);
+    }
+    return capHoldings(
+      { ...equalWeight(top, 0.13), [ASSET.ITT]: 0.12, ...leveragedNasdaqCore(ctx, 0.75, 0.45, 2) },
+      10,
+    );
   },
 };
