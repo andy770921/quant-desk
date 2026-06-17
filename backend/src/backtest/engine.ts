@@ -88,6 +88,10 @@ export function makeContext(md: MarketDataService, i: number): StrategyContext {
     vol: (a, p) => ind.vol(md.getLevels(a), i, p),
     score13612W: (a) => ind.score13612W(md.getLevels(a), i),
     accel: (a) => ind.accelMomentum(md.getLevels(a), i),
+    yieldVal: (key, lag = 0) => {
+      const idx = i - lag;
+      return idx >= 0 ? md.getYieldLevel(key)[idx] : undefined;
+    },
     has: (a) => md.getLevels(a)[i] !== undefined,
     stocks: () => md.getStockKeys().filter((k) => md.getLevels(k)[i] !== undefined),
   };

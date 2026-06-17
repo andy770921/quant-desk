@@ -107,30 +107,34 @@ endpoints map directly to query keys. Example: strategy detail page → `useBack
   one and register it in `index.ts`), then regenerate signals. **10 strategies ship**, and every
   one holds **AT MOST 10 instruments** and trades on **at most 3 days a month** (the engine enforces
   the ≤3-trade cap). `01` is the mandated leveraged flagship (3x Nasdaq gated by QQQ's 20-day MA).
-  `02–06` are **leveraged-ETF** strategies (leverage held with cash via the synthetic leveraged-ETF
-  assets, never on margin — the user-approved lever) that beat QQQ DCA in BOTH the 1990 and 2010
-  windows by only gearing up inside a 200-day uptrend and sizing leverage by volatility:
-  `02` vol-targeted leveraged Nasdaq (cap 2x), `03` leveraged dual-momentum rotation (2x winner of
-  Nasdaq/S&P), `04` balanced leveraged growth (65% 2x Nasdaq + 35% long Treasury), `05` aggressive
-  vol-targeted leveraged Nasdaq (cap 3x), `06` trend-gated HFEA leveraged risk-parity (3x Nasdaq +
-  trend-gated 3x LTT / gold). `07–10` are **leveraged-core + stock-satellite** books: a dominant
-  vol-targeted leveraged-Nasdaq core (the SAME bias-free lever as `02`/`05`, held with cash via the
-  leveraged-ETF assets) does the heavy lifting so each beats QQQ in BOTH the 1990 and 2010 windows,
-  with a modest low-vol-momentum stock satellite over the ~500-name S&P 500 universe for an honest,
-  high-Sharpe factor tilt (the core, not survivorship-biased single-name concentration, drives the
-  return): `07` 80% 2x core + 20% low-vol momentum stocks, `08` 70% 2x core + 15% stocks + 15% gold
-  hedge, `09` 85% 2x core + 15% stocks (most index-like), `10` 75% 2x core + 15% stocks + 12% Treasury
-  cushion. Each `02-10` simulates **investing $2000/month** and beats dollar-cost-averaging into
-  **QQQ by ≥15%** over full history (a ≥10% floor is tolerated for the gentlest book), with a Sharpe
-  ≥ the QQQ benchmark; the bias-free leveraged `02-06` also clear the ≥15% bar from a 2010 start,
-  while `07-10` clear the **≥10%** bar from 2010 (+11–14%). That promise + the ≤10-holdings bound is
+  `02–10` are the nine **survivorship-bias-free, literature-backed** research books (S1–S9) — **none
+  selects individual stocks** (the old single-stock momentum books were retired); leverage is held
+  with cash via the synthetic leveraged-ETF assets, never on margin (the user-approved lever):
+  `02` Diversified Time-Series Momentum (managed futures: Nasdaq/LTT/gold each gated by its own
+  trend, vol-targeted equity sleeve — Moskowitz/Ooi/Pedersen),
+  `03` Dual Momentum GEM (absolute-vs-cash gate + relative Nasdaq/EAFE, vol-targeted — Antonacci),
+  `04` Volatility-Managed Equity (exposure ∝ inverse realized variance — Moreira & Muir, JF 2017 —
+  the one book that still beats QQQ from 2010),
+  `05` Yield-Curve Macro Regime (10y−3m spread as recession gate via `ctx.yieldVal` — Estrella &
+  Mishkin),
+  `06` Sector Momentum Rotation (top-3 SPDR sectors + leveraged-S&P core — Faber),
+  `07` Tactical Leveraged Risk Parity (inverse-vol Nasdaq/LTT/gold + trend + HFEA lever — Dalio/HFEA;
+  highest Sharpe ~0.80),
+  `08` Short-Term Mean Reversion (RSI-2 dip-buying above the 200d MA — Connors & Alvarez),
+  `09` Leverage for the Long Run (graduated 50/100/150/200/250-day trend × vol-target, S&P 1x/2x/3x —
+  Gayed & Bilello),
+  `10` Defensive Asset Allocation (canary breadth-momentum crash gate over {EAFE, LTT} — Keller &
+  Keuning). Each `02-10` simulates **investing $2000/month** and beats dollar-cost-averaging into
+  the market — **QQQ OR VOO by ≥10%** in final value over full history (all nine clear VOO; ~4 also
+  clear QQQ by ≥15%), with a Sharpe ≥ the (lower) benchmark. The 2010s were QQQ's best decade ever,
+  so from a 2010 start only a subset (≥3: `04`/`08`/`10`) still beats QQQ-or-VOO by ≥10% — the honest
+  result, not a claim that every book wins the 2010s. That promise + the ≤10-holdings bound is
   locked by `backtest/strategy-eval.spec.ts` (harness: `backtest/strategy-eval.ts`, which also reports
   Calmar = return ÷ maxDD). **Engine rule**: `decide()` weights must sum to ≤ 1; there's no
   borrowing, so >1x market exposure is only possible via the leveraged-ETF assets — returning gross
-  > 1 silently inflates value and is a bug. **Stock satellites in `07-10` carry survivorship bias**
-  (the universe is today's S&P 500 members), but it is now confined to the ≤20% stock sleeve — the
-  leveraged index core is bias-free, so `07-10` figures are far more credible than the old
-  ~50x pure-momentum books they replaced. See DATA.md.
+  > 1 silently inflates value and is a bug. All nine books are **bias-free** (indices/rates/sector
+  ETFs only); pre-ETF bond/cash/leverage series are modeled, not traded prices. Source research lives
+  in `../claude-workspace/quant-strategies/` (CONCLUSION.md, STRATEGY-FORMULAS.md). See DATA.md.
 - **Engine**: `backtest/engine.ts` — share-based, NO-borrow daily simulation (leverage only via
   leveraged-ETF assets); ≤3 trades/month; DCA & lump-sum modes; produces a share/dollar trade
   ledger + holdings. `backtest/backtest.service.ts` orchestrates it (strategy + QQQ/VOO benchmarks);

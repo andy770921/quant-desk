@@ -38,6 +38,8 @@ export class MarketDataService implements OnModuleInit {
   private calendarIndex = new Map<string, number>();
   /** Logical asset → daily level aligned to the calendar (undefined pre-inception). */
   private levels = new Map<AssetKey, Aligned>();
+  /** Raw Treasury yield series (percent) aligned to the calendar, for macro signals. */
+  private yieldCache = new Map<string, Aligned>();
   /** Individual-stock ticker → raw daily points (sorted), loaded from data/stocks/. */
   private rawStocks = new Map<string, RawPoint[]>();
   /** Stock asset keys (e.g. STK_AAPL) with data loaded, exposed to strategies. */
@@ -58,6 +60,7 @@ export class MarketDataService implements OnModuleInit {
   private rebuild() {
     this.buildCalendar();
     this.inceptionLevelCache.clear();
+    this.yieldCache.clear();
     this.buildAssets();
     this.buildStocks();
   }
@@ -378,6 +381,21 @@ export class MarketDataService implements OnModuleInit {
     const lv = this.levels.get(asset);
     if (!lv) throw new Error(`Unknown asset ${asset}`);
     return lv;
+  }
+
+  /**
+   * Raw aligned Treasury yield series (in percent) for macro / yield-curve
+   * signals — e.g. the 10y−3m spread `getYieldLevel('TNX')[i] − getYieldLevel('IRX')[i]`.
+   * Unlike `getLevels`, this exposes the underlying rate itself (not a synthesized
+   * bond total-return level). Returns an all-undefined array if the series is absent.
+   */
+  getYieldLevel(key: 'IRX' | 'TNX' | 'TYX'): Aligned {
+    let y = this.yieldCache.get(key);
+    if (!y) {
+      y = this.align(key, 'c');
+      this.yieldCache.set(key, y);
+    }
+    return y;
   }
 
   /** All loaded individual-stock asset keys (e.g. STK_AAPL). */

@@ -1,50 +1,87 @@
-import { ASSET } from '../../market-data/assets';
+import { ASSET, SECTOR_ASSETS } from '../../market-data/assets';
 import { StrategyContext, StrategyDefinition, Weights } from '../strategy.types';
-import { bestDefensive, trendUp } from './_helpers';
+import {
+  addW,
+  bestDefensive,
+  capHoldings,
+  equalWeight,
+  leveragedEquity,
+  rankBy,
+  trendUp,
+} from './_helpers';
 
 /**
- * Strategy 6: Leveraged Risk Parity (HFEA-style, trend-gated). The "Hedgefundie"
- * 3x-stock / 3x-bond risk-parity book, made survivable: while the Nasdaq is above
- * its 200-day MA, hold 55% 3x Nasdaq and 45% in a leveraged long-Treasury sleeve
- * — but the bond leg only uses 3x Treasuries while bonds are themselves trending
- * up, falling back to gold (the 2022 rate-shock hedge) otherwise. Below the
- * 200-day MA it goes fully defensive. Holds at most 2 instruments.
+ * Strategy 6 (S5) — Sector Momentum Rotation. Source: Faber (2007), GTAA. Rotate
+ * into the strongest SPDR sectors while the broad market is in an uptrend.
+ * Monthly. Bias-free (sector ETFs + index only).
+ *
+ * Below the S&P's 200-day MA it goes risk-off. In an uptrend it puts 70% in the
+ * 3 strongest sectors (by 13612W, keeping only positive-momentum ones) and 30% in
+ * a vol-targeted leveraged S&P core (gross capped at 1, since no 2x sector ETFs
+ * exist — leverage is expressed only through the broad-index core). Pre-1998,
+ * before sector ETFs exist, it holds the leveraged Nasdaq core.
  */
-export const leveragedRiskParity: StrategyDefinition = {
-  id: 'leveraged-risk-parity',
-  name: '槓桿風險平價 HFEA',
-  shortName: '槓桿風險平價',
-  category: 'diversified',
+export const sectorMomentum: StrategyDefinition = {
+  id: 's5-sector-momentum',
+  name: '產業動能輪動',
+  shortName: '產業輪動',
+  category: 'momentum',
   description:
-    '那斯達克多頭時，55% 持有 3 倍那斯達克 ETF、45% 持有槓桿長債（債券趨勢轉弱時改持黃金避開升息衝擊）；跌破 200 日均線就全數轉入趨勢最強的避險資產。經典 HFEA「3 倍股＋3 倍債」風險平價的改良版。',
+    'S&P 500 站上 200 日均線時，把 70% 資金輪入 13612W 動能最強的 3 個 SPDR 類股（僅留動能為正者），另 30% 配置波動目標槓桿的標普核心；跌破均線就全數轉入趨勢最強的公債/黃金/現金。類股無 2 倍 ETF，故槓桿只透過標普核心表達（總曝險上限約 1）。',
   longDescription:
-    "知名的 HFEA（Hedgefundie's Excellent Adventure）風險平價：用 3 倍股票與 3 倍長債做負相關配置，" +
-    '多頭時股債齊漲、回檔時長債通常上漲對沖。本策略在此之上加兩道防護：' +
-    '(1) 以那斯達克 200 日均線為總開關，跌破時 100% 退場轉入避險資產；' +
-    '(2) 債券部位只在長債自身趨勢向上時用 3 倍槓桿長債，否則改持黃金——避開 2022 年那種升息把長債與 3 倍長債一起打趴的情境。' +
-    '多頭時 55% 3 倍那斯達克 + 45% 槓桿長債/黃金，靠槓桿與股債對沖同時放大報酬、平滑波動，定期定額長期大幅領先 QQQ。' +
-    '本策略槓桿與回撤都偏高，是平台上最積極的配置之一。',
+    'Mebane Faber「A Quantitative Approach to Tactical Asset Allocation」(2007) 的產業版本：在大盤多頭時，資金集中到相對強勢的產業，能擷取產業輪動的動能溢酬。' +
+    '每月檢查 S&P 500 是否站上 200 日均線——跌破就全數轉入中期/長期公債、黃金、現金中近半年趨勢最強者避險。' +
+    '站上均線時，計算九大 SPDR 類股（科技、金融、能源、醫療、非必需消費、必需消費、工業、原物料、公用事業）的 13612W 動能分數，選出最強 3 個（且分數須為正），等權重配置 70%；另 30% 配置波動目標槓桿的標普 500 核心（30% ÷ 近 3 個月波動，上限 2 倍，1x＋2x ETF）。' +
+    '由於市場沒有 2 倍的單一類股 ETF，槓桿只透過標普核心表達，整體總曝險約 1。1998 年類股 ETF 問世前，改持有槓桿那斯達克核心。無存活者偏誤。',
   rules: [
-    '每日檢查那斯達克 100 是否站上 200 日均線。',
-    '站上：55% 持有 3 倍那斯達克 ETF。',
-    '債券部位（45%）：長債趨勢向上 → 3 倍長債 ETF；否則 → 黃金。',
-    '跌破：全數轉入中期/長期公債、黃金、現金中近半年趨勢最強者。每月最多交易 3 次，最多持有 2 檔。',
+    'S&P 500 < 200 日均線 → 全數轉入趨勢最強的公債/黃金/現金。',
+    '站上均線：選 13612W 分數最高且為正的 3 個類股，等權重 70%。',
+    '另 30% 配置波動目標槓桿標普核心（上限 2 倍）；類股 ETF 問世前改持槓桿那斯達克核心。',
+    '每月再評估一次；每月最多交易 3 次，最多持有 10 檔。',
   ],
   caveats: [
-    '3 倍 ETF 每日重設、波動耗損大，最大回撤可達 70% 以上（2000 年科技泡沫期）。',
-    '股債同跌（如 2022）時，即使有黃金備援也可能兩頭受傷。',
-    '槓桿與波動最高，僅適合風險承受度高、長期定期定額的投資人。',
+    '產業動能在輪動快速的市場會頻繁換股，受每月 3 次交易上限節制。',
+    '集中於 3 個類股，單一產業利空時波動較大。',
+    '槓桿型 ETF 每日重設，盤整時有波動耗損。',
   ],
-  tags: ['槓桿', '風險平價', 'HFEA', '股債配置'],
-  rebalance: 'daily',
-  universe: ['那斯達克100 (3x)', '長期公債 (3x)', '黃金', '中期公債', '現金'],
-  assets: [ASSET.NASDAQ, ASSET.NASDAQ3X, ASSET.LTT, ASSET.LTT3X, ASSET.GOLD, ASSET.ITT, ASSET.CASH],
-  coreAssets: [ASSET.NASDAQ, ASSET.LTT],
-  warmupDays: 210,
-  cadence: 'daily',
+  tags: ['動能', '產業輪動', '相對強度'],
+  rebalance: 'monthly',
+  universe: [
+    '9 大 SPDR 類股',
+    '標普500 (1x/2x)',
+    '那斯達克 (1x/2x)',
+    '中/長期公債',
+    '黃金',
+    '現金',
+  ],
+  assets: [
+    ...SECTOR_ASSETS,
+    ASSET.NASDAQ,
+    ASSET.NASDAQ2X,
+    ASSET.USLC,
+    ASSET.USLC2X,
+    ASSET.ITT,
+    ASSET.LTT,
+    ASSET.GOLD,
+    ASSET.CASH,
+  ],
+  coreAssets: [ASSET.USLC],
+  warmupDays: 262,
+  cadence: 'monthly',
   decide(ctx: StrategyContext): Weights {
-    if (!trendUp(ctx, ASSET.NASDAQ, 200)) return { [bestDefensive(ctx)]: 1 };
-    const bond = trendUp(ctx, ASSET.LTT, 100) ? ASSET.LTT3X : ASSET.GOLD;
-    return { [ASSET.NASDAQ3X]: 0.55, [bond]: 0.45 };
+    if (!trendUp(ctx, ASSET.USLC, 200)) return { [bestDefensive(ctx)]: 1 };
+    const avail = SECTOR_ASSETS.filter((a) => ctx.has(a));
+    // Sectors not available pre-1998 → leveraged broad index (correct ETF-based leverage).
+    if (avail.length < 3)
+      return leveragedEquity(ctx, ASSET.NASDAQ, ASSET.NASDAQ2X, undefined, 1, 0.3, 2);
+    const top = rankBy(avail, (a) => ctx.score13612W(a))
+      .slice(0, 3)
+      .map((x) => x.asset)
+      .filter((a) => (ctx.score13612W(a) ?? -1) > 0);
+    if (!top.length) return { [bestDefensive(ctx)]: 1 };
+    // 70% into the strongest sectors + a 30% vol-targeted leveraged S&P core (gross = 1).
+    const sectors = equalWeight(top, 0.7);
+    const core = leveragedEquity(ctx, ASSET.USLC, ASSET.USLC2X, undefined, 0.3, 0.3, 2);
+    return capHoldings(addW(sectors, core), 10);
   },
 };

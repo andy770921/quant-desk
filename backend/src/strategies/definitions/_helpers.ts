@@ -79,6 +79,87 @@ export function equalWeight(assets: AssetKey[], budget = 1): Weights {
   return w;
 }
 
+/** Sum any number of weight maps into one (overlapping assets accumulate). */
+export function addW(...weights: Weights[]): Weights {
+  const out: Weights = {};
+  for (const w of weights) {
+    for (const a of Object.keys(w) as AssetKey[]) out[a] = (out[a] ?? 0) + (w[a] ?? 0);
+  }
+  return out;
+}
+
+/**
+ * Plain inverse-volatility (risk-parity) weights over `assets`, normalized to
+ * `budget` (default 1) using trailing realized vol over `volDays`. Each asset's
+ * weight is proportional to 1/σ so every sleeve contributes roughly equal risk.
+ * Falls back to equal weight if no volatility is available. (Distinct from
+ * `inverseVolWeights`, which first ranks/slices by 13612W momentum.)
+ */
+export function invVol(
+  ctx: StrategyContext,
+  assets: AssetKey[],
+  volDays: number,
+  budget = 1,
+): Weights {
+  const raw = assets.map((asset) => {
+    const v = ctx.vol(asset, volDays);
+    return { asset, inv: v && v > 0 ? 1 / v : 0 };
+  });
+  const total = raw.reduce((s, r) => s + r.inv, 0);
+  const w: Weights = {};
+  if (total === 0) {
+    for (const a of assets) w[a] = budget / Math.max(1, assets.length);
+    return w;
+  }
+  for (const r of raw) if (r.inv > 0) w[r.asset] = Number(((r.inv / total) * budget).toFixed(4));
+  return w;
+}
+
+/**
+ * Graduated trend exposure in [0, 1]: the fraction of the moving-average windows
+ * the asset's price currently sits above. Replaces a binary 0%/100% trend gate
+ * with a stepwise one (default 5 windows ⇒ 20% steps) so no single day flips the
+ * whole book in or out — the realism lever behind "Leverage for the Long Run".
+ */
+export function trendExposure(
+  ctx: StrategyContext,
+  asset: AssetKey,
+  windows: number[] = [50, 100, 150, 200, 250],
+): number {
+  let up = 0;
+  let n = 0;
+  const p = ctx.level(asset);
+  for (const w of windows) {
+    const ma = ctx.sma(asset, w);
+    if (p !== undefined && ma !== undefined) {
+      n++;
+      if (p > ma) up++;
+    }
+  }
+  return n ? up / n : 0;
+}
+
+/**
+ * Vol-targeted leveraged equity sleeve scaled to `budget`, expressed as a
+ * 1x/2x(/3x) ETF blend (held with cash, never on margin). Generalizes
+ * `leveragedNasdaqCore` to any index family (Nasdaq or S&P): exposure =
+ * target ÷ recent realized vol, capped, then scaled to the caller's budget. The
+ * caller owns any trend gate. Reuses the shared `target`/`cap` lever so the
+ * S-series books avoid per-strategy parameter mining.
+ */
+export function leveragedEquity(
+  ctx: StrategyContext,
+  oneX: AssetKey,
+  twoX: AssetKey | undefined,
+  threeX: AssetKey | undefined,
+  budget: number,
+  target = 0.3,
+  cap = 2,
+): Weights {
+  const exposure = volTargetExposure(ctx, oneX, target, cap);
+  return scaleWeights(equityExposureWeights(exposure, oneX, twoX, threeX), budget);
+}
+
 /**
  * 12-1 price momentum: trailing 12-month return skipping the most recent month
  * (level 1m ago ÷ level 12m ago − 1). Skipping the last month is the classic

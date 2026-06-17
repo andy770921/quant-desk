@@ -24,6 +24,12 @@ export interface StrategyContext {
   score13612W(asset: AssetKey): number | undefined;
   /** Accelerating momentum (avg of 1m/3m/6m returns). */
   accel(asset: AssetKey): number | undefined;
+  /**
+   * Raw Treasury yield level (in percent) for macro / yield-curve signals, e.g.
+   * the 10y−3m recession spread `yieldVal('TNX') − yieldVal('IRX')`. Optionally
+   * lagged by `lag` days. Undefined before the yield series begins.
+   */
+  yieldVal(key: 'IRX' | 'TNX' | 'TYX', lag?: number): number | undefined;
   /** Whether the asset has a value on the signal day. */
   has(asset: AssetKey): boolean;
   /** Individual-stock asset keys (STK_*) that have data on the signal day. */
